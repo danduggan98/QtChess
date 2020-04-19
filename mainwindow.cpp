@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     board_graphics->setScene(board_scene);
 
     //Create the board
-    Board board(board_scene);
+    Board board(board_graphics);
     this->board_ptr = &board;
 }
 
