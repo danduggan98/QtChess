@@ -16,22 +16,23 @@ class Square : public QObject, public QGraphicsItem {
         /*Piece piece*/
 
     public:
-        explicit Square(int x, int y, bool empty, /*Piece piece, */
-                        QObject *parent = nullptr);
+        explicit Square(int x, int y, float width, float height,
+                        bool empty, QObject *parent = nullptr); /*Piece piece,*/
 
         int get_x() { return x_val_; };
         int get_y() { return y_val_; };
         bool isEmpty() { return empty_; };
-        void setContents(/*Piece piece*/);
+        /*void setContents(Piece piece);*/
 
         QRectF boundingRect() const override;
         QPainterPath shape() const override;
-
-    signals:
-        void SquareSelected(Square *s);
+        void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) override;
 
     protected:
         void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
+
+    signals:
+        void SquareSelected(Square *s);
 };
 
 #endif // SQUARE_H
