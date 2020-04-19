@@ -4,7 +4,7 @@
 #include "square.h"
 
 #include <QObject>
-#include <QGraphicsScene>
+#include <QGraphicsView>
 
 class Board : public QObject
 {
@@ -23,7 +23,7 @@ class Board : public QObject
 
         static Square* board_[numRows][numCols];
 
-        explicit Board(QGraphicsScene *scene, QObject *parent = nullptr);
+        explicit Board(QGraphicsView *view, QObject *parent = nullptr);
         void Reset();
 };
 

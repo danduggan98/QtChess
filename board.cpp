@@ -6,11 +6,11 @@
 Square* Board::board_[Board::numRows][Board::numCols] = {};
 
 //Constructor
-Board::Board(QGraphicsScene *scene, QObject *parent) : QObject(parent) {
-    board_scene_ = scene;
+Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
+    board_scene_ = view->scene();
 
-    width_ = board_scene_->width();
-    height_ = board_scene_->width();
+    width_ = view->frameSize().width();
+    height_ = view->frameSize().height();
 
     square_width_ = width_ / (float) Board::numCols;
     square_height_ = height_ / (float) Board::numRows;
