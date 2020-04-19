@@ -28,7 +28,7 @@ void Square::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     Q_UNUSED(option);
 
     QBrush b = painter->brush();
-    painter->setBrush(QBrush(QColor(0,0,0))); //White
+    painter->setBrush(QBrush(QColor(255,255,255))); //White or tan squares
     painter->drawRect(QRect(this->x_val_ * this->width_, this->y_val_ * this->height_, this->width_, this->height_));
     painter->setBrush(b);
 }
