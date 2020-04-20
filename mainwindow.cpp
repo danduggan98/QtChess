@@ -30,6 +30,12 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::SquareSelectedSlot(Square *s) {
     qDebug() << "Selected square (" << s->get_x() << ", " << s->get_y() << ")";
+
+    if (!s->isEmpty()) {
+        qDebug() << "Square contains a " << s->get_piece()->get_type();
+    } else {
+        qDebug() << "Square is empty";
+    }
 }
 
 MainWindow::~MainWindow() {

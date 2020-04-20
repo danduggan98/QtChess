@@ -17,9 +17,9 @@
    <widget class="QGraphicsView" name="Board">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>180</x>
       <y>100</y>
-      <width>521</width>
+      <width>441</width>
       <height>400</height>
      </rect>
     </property>
