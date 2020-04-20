@@ -25,6 +25,7 @@ SOURCES += \
 HEADERS += \
     board.h \
     mainwindow.h \
+    move.h \
     piece.h \
     square.h
 
