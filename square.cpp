@@ -10,6 +10,7 @@ Square::Square(int x, int y, float width, float height,
     height_ = height;
     empty_ = empty;
     color_ = color;
+    piece_ = nullptr;
 }
 
 //Set the square's boundaries

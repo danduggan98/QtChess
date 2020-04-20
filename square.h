@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QGraphicsItem>
-#
+#include "piece.h"
 
 class Square : public QObject, public QGraphicsItem {
     Q_OBJECT
@@ -15,17 +15,18 @@ class Square : public QObject, public QGraphicsItem {
         float height_;
         bool empty_;
         QColor color_;
-        /*Piece piece_*/
+        Piece* piece_;
 
     public:
         explicit Square(int x, int y, float width, float height,
-                        bool empty, QColor color, QObject *parent = nullptr); /*Piece piece,*/
+                        bool empty, QColor color, QObject *parent = nullptr);
 
         int get_x() { return x_val_; };
         int get_y() { return y_val_; };
         bool isEmpty() { return empty_; };
-        /*Piece get_piece();*/
-        /*void SetPiece(Piece piece);*/
+        Piece* get_piece() { return piece_; };
+        void RemovePiece() { piece_ = nullptr; };
+        void SetPiece(Piece* piece) { piece_ = piece; };
 
         QRectF boundingRect() const override;
         QPainterPath shape() const override;
