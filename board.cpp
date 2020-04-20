@@ -45,5 +45,5 @@ Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
 
 //Move the pieces to their starting positions
 void Board::Reset() {
-    qDebug() << width_ << " " << height_;
+    qDebug() << "Pieces set to their starting positions";
 }

@@ -19,6 +19,17 @@ MainWindow::MainWindow(QWidget *parent)
     //Create the board
     Board board(board_graphics);
     this->board_ptr = &board;
+
+    //Connect each square to its slot
+    for (int i = 0; i < Board::numRows; i++) {
+        for (int j = 0; j < Board::numCols; j++) {
+            connect(Board::board_[i][j], &Square::SquareSelected, this, &MainWindow::SquareSelectedSlot);
+        }
+    }
+}
+
+void MainWindow::SquareSelectedSlot(Square *s) {
+    qDebug() << "Selected square (" << s->get_x() << ", " << s->get_y() << ")";
 }
 
 MainWindow::~MainWindow() {

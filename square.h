@@ -15,7 +15,7 @@ class Square : public QObject, public QGraphicsItem {
         float height_;
         bool empty_;
         QColor color_;
-        /*Piece piece*/
+        /*Piece piece_*/
 
     public:
         explicit Square(int x, int y, float width, float height,
@@ -24,7 +24,8 @@ class Square : public QObject, public QGraphicsItem {
         int get_x() { return x_val_; };
         int get_y() { return y_val_; };
         bool isEmpty() { return empty_; };
-        /*void setContents(Piece piece);*/
+        /*Piece get_piece();*/
+        /*void SetPiece(Piece piece);*/
 
         QRectF boundingRect() const override;
         QPainterPath shape() const override;

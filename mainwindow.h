@@ -22,5 +22,7 @@ class MainWindow : public QMainWindow {
         Ui::MainWindow *ui;
         QGraphicsScene *board_scene;
 
+    private slots:
+        void SquareSelectedSlot(Square *s);
 };
 #endif // MAINWINDOW_H
