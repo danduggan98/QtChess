@@ -5,7 +5,7 @@
 
 #include <QObject>
 #include <QColor>
-#include <string>
+#include <QString>
 #include <vector>
 
 class Piece : public QObject {
@@ -14,12 +14,13 @@ class Piece : public QObject {
     private:
         int x_pos_;
         int y_pos_;
-        std::string type_;
-        QColor color_;
+        QString type_;
+        char color_;
         std::vector<Move> moveset_();
 
     public:
-        explicit Piece(int x, int y, std::string type, QColor color, QObject *parent = nullptr);
+        explicit Piece(int x, int y, QString type, char color, QObject *parent = nullptr);
+        QString get_type() { return type_; };
         void DefineMoveset();
         void MovePiece(Move m);
         bool isValidMove(Move m);
