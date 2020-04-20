@@ -9,8 +9,8 @@ Square* Board::board_[Board::numRows][Board::numCols] = {};
 Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
     board_scene_ = view->scene();
 
-    width_ = view->frameSize().width()-3;
-    height_ = view->frameSize().height()-3;
+    width_ = view->frameSize().width();
+    height_ = view->frameSize().height();
 
     square_width_ = width_ / (float) Board::numCols;
     square_height_ = height_ / (float) Board::numRows;
@@ -45,5 +45,12 @@ Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
 
 //Move the pieces to their starting positions
 void Board::Reset() {
+
+    //Pawns
+    for (int i = 0; i < Board::numCols; i++) {
+        board_[1][i]->SetPiece(new Piece(6, i, "pawn", 'b')); //Black pawns
+        board_[6][i]->SetPiece(new Piece(6, i, "pawn", 'w')); //White pawns
+    }
+
     qDebug() << "Pieces set to their starting positions";
 }
