@@ -19,11 +19,13 @@ SOURCES += \
     board.cpp \
     main.cpp \
     mainwindow.cpp \
+    piece.cpp \
     square.cpp
 
 HEADERS += \
     board.h \
     mainwindow.h \
+    piece.h \
     square.h
 
 FORMS += \
