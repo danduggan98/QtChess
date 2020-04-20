@@ -25,8 +25,10 @@ class Square : public QObject, public QGraphicsItem {
         int get_y() { return y_val_; };
         bool isEmpty() { return empty_; };
         Piece* get_piece() { return piece_; };
-        void RemovePiece() { piece_ = nullptr; };
-        void SetPiece(Piece* piece) { piece_ = piece; };
+
+        void RemovePiece();
+        void SetPiece(Piece* piece);
+        void DisplayPiece();
 
         QRectF boundingRect() const override;
         QPainterPath shape() const override;

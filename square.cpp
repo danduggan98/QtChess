@@ -1,6 +1,7 @@
 #include "square.h"
 
 #include <QtWidgets>
+#include <QDebug>
 
 Square::Square(int x, int y, float width, float height,
                bool empty, QColor color, QObject *parent) : QObject(parent) {
@@ -11,6 +12,23 @@ Square::Square(int x, int y, float width, float height,
     empty_ = empty;
     color_ = color;
     piece_ = nullptr;
+}
+
+void Square::RemovePiece() {
+    piece_ = nullptr;
+    empty_ = true;
+}
+
+//Add a piece to this square
+void Square::SetPiece(Piece *piece) {
+    piece_ = piece;
+    empty_ = false;
+}
+
+//Show the icon for our piece on this square
+void Square::DisplayPiece() {
+    std::string filepath = "pieces/";
+    //UHHHH
 }
 
 //Set the square's boundaries
@@ -28,6 +46,10 @@ QPainterPath Square::shape() const {
 void Square::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     Q_UNUSED(widget);
     Q_UNUSED(option);
+
+    //Remove black borders and tone down the color a bit
+    painter->setPen(Qt::NoPen);
+    painter->setOpacity(0.8);
 
     QBrush b = painter->brush();
     painter->setBrush(QBrush(color_));
