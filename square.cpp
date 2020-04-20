@@ -3,12 +3,13 @@
 #include <QtWidgets>
 
 Square::Square(int x, int y, float width, float height,
-               bool empty, QObject *parent) : QObject(parent) {
+               bool empty, QColor color, QObject *parent) : QObject(parent) {
     x_val_ = x;
     y_val_ = y;
     width_ = width;
     height_ = height;
     empty_ = empty;
+    color_ = color;
 }
 
 //Set the square's boundaries
@@ -28,7 +29,7 @@ void Square::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     Q_UNUSED(option);
 
     QBrush b = painter->brush();
-    painter->setBrush(QBrush(QColor(255,255,255))); //White or tan squares
+    painter->setBrush(QBrush(color_)); //White or tan squares
     painter->drawRect(QRect(this->x_val_ * this->width_, this->y_val_ * this->height_, this->width_, this->height_));
     painter->setBrush(b);
 }

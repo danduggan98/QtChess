@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QGraphicsItem>
+#
 
 class Square : public QObject, public QGraphicsItem {
     Q_OBJECT
@@ -13,11 +14,12 @@ class Square : public QObject, public QGraphicsItem {
         float width_;
         float height_;
         bool empty_;
+        QColor color_;
         /*Piece piece*/
 
     public:
         explicit Square(int x, int y, float width, float height,
-                        bool empty, QObject *parent = nullptr); /*Piece piece,*/
+                        bool empty, QColor color, QObject *parent = nullptr); /*Piece piece,*/
 
         int get_x() { return x_val_; };
         int get_y() { return y_val_; };
@@ -26,7 +28,8 @@ class Square : public QObject, public QGraphicsItem {
 
         QRectF boundingRect() const override;
         QPainterPath shape() const override;
-        void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) override;
+        void paint(QPainter *painter, const QStyleOptionGraphicsItem *item,
+                   QWidget *widget) override;
 
     protected:
         void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
