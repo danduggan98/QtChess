@@ -17,9 +17,9 @@
    <widget class="QGraphicsView" name="Board">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>190</x>
       <y>100</y>
-      <width>441</width>
+      <width>432</width>
       <height>400</height>
      </rect>
     </property>
@@ -31,6 +31,12 @@
     </property>
     <property name="cursor" stdset="0">
      <cursorShape>ArrowCursor</cursorShape>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(255, 255, 255);</string>
     </property>
     <property name="frameShape">
      <enum>QFrame::Box</enum>
