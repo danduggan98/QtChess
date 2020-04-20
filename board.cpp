@@ -9,14 +9,14 @@ Square* Board::board_[Board::numRows][Board::numCols] = {};
 Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
     board_scene_ = view->scene();
 
-    width_ = view->frameSize().width();
-    height_ = view->frameSize().height();
+    width_ = view->frameSize().width()-3;
+    height_ = view->frameSize().height()-3;
 
     square_width_ = width_ / (float) Board::numCols;
     square_height_ = height_ / (float) Board::numRows;
 
     //Add the grid and empty squares
-    QColor tan(215,190,160);
+    QColor tan(225,210,180);
     QColor brown(175,120,65);
     QColor square_color;
 

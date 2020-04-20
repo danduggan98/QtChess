@@ -29,7 +29,7 @@ void Square::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     Q_UNUSED(option);
 
     QBrush b = painter->brush();
-    painter->setBrush(QBrush(color_)); //White or tan squares
+    painter->setBrush(QBrush(color_));
     painter->drawRect(QRect(this->x_val_ * this->width_, this->y_val_ * this->height_, this->width_, this->height_));
     painter->setBrush(b);
 }
