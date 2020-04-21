@@ -59,5 +59,31 @@ void Board::Reset() {
         AddPiece(new Piece(6, i, "pawn", 'w')); //White pawns
     }
 
+    //Rooks
+    AddPiece(new Piece(0, 0, "rook", 'b'));
+    AddPiece(new Piece(0, 7, "rook", 'b'));
+    AddPiece(new Piece(7, 0, "rook", 'w'));
+    AddPiece(new Piece(7, 7, "rook", 'w'));
+
+    //Knights
+    AddPiece(new Piece(0, 1, "knight", 'b'));
+    AddPiece(new Piece(0, 6, "knight", 'b'));
+    AddPiece(new Piece(7, 1, "knight", 'w'));
+    AddPiece(new Piece(7, 6, "knight", 'w'));
+
+    //Bishops
+    AddPiece(new Piece(0, 2, "bishop", 'b'));
+    AddPiece(new Piece(0, 5, "bishop", 'b'));
+    AddPiece(new Piece(7, 2, "bishop", 'w'));
+    AddPiece(new Piece(7, 5, "bishop", 'w'));
+
+    //Queens
+    AddPiece(new Piece(0, 3, "queen", 'b'));
+    AddPiece(new Piece(7, 3, "queen", 'w'));
+
+    //Kings
+    AddPiece(new Piece(0, 4, "king", 'b'));
+    AddPiece(new Piece(7, 4, "king", 'w'));
+
     qDebug() << "Pieces set to their starting positions";
 }
