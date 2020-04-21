@@ -17,8 +17,6 @@ void Piece::DefineMoveset() {
     /*if (type_ == "pawn") {
         etc...
     }*/
-
-    qDebug() << "Defined moveset";
 }
 
 //Move the piece to a new square
