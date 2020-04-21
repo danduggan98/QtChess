@@ -24,6 +24,7 @@ class Board : public QObject
         static Square* board_[numRows][numCols];
 
         explicit Board(QGraphicsView *view, QObject *parent = nullptr);
+        void AddPiece(Piece *piece);
         void Reset();
 };
 

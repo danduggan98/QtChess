@@ -43,16 +43,21 @@ Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
     Reset();
 }
 
+//Add a piece at its x and y positions on the board
+void Board::AddPiece(Piece *piece) {
+    int r = piece->get_x();
+    int c = piece->get_y();
+    board_[r][c]->SetPiece(piece);
+}
+
 //Move the pieces to their starting positions
 void Board::Reset() {
 
     //Pawns
     for (int i = 0; i < Board::numCols; i++) {
-        board_[1][i]->SetPiece(new Piece(1, i, "pawn", 'b')); //Black pawns
-        board_[6][i]->SetPiece(new Piece(6, i, "pawn", 'w')); //White pawns
+        AddPiece(new Piece(1, i, "pawn", 'b')); //Black pawns
+        AddPiece(new Piece(6, i, "pawn", 'w')); //White pawns
     }
-
-
 
     qDebug() << "Pieces set to their starting positions";
 }
