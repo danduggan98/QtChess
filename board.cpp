@@ -34,7 +34,7 @@ Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
             //Add the square to both the board and the scene
             Square* s = new Square(i, j, square_width_, square_height_,
                                    true, square_color);
-            board_[i][j] = s;
+            board_[j][i] = s;
             board_scene_->addItem(s);
         }
     }
@@ -48,9 +48,11 @@ void Board::Reset() {
 
     //Pawns
     for (int i = 0; i < Board::numCols; i++) {
-        board_[1][i]->SetPiece(new Piece(6, i, "pawn", 'b')); //Black pawns
+        board_[1][i]->SetPiece(new Piece(1, i, "pawn", 'b')); //Black pawns
         board_[6][i]->SetPiece(new Piece(6, i, "pawn", 'w')); //White pawns
     }
+
+
 
     qDebug() << "Pieces set to their starting positions";
 }
