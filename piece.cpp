@@ -20,7 +20,7 @@ void Piece::DefineMoveset() {
 }
 
 //Move the piece to a new square
-void Piece::MovePiece(Move m) {
+void Piece::ChangePos(Coord m) {
     x_pos_ = m.X();
     y_pos_ = m.Y();
 }

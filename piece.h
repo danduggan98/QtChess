@@ -26,7 +26,7 @@ class Piece : public QObject {
         char get_color() { return color_; };
 
         void DefineMoveset();
-        void MovePiece(Coord m);
+        void ChangePos(Coord m);
         bool isValidMove(Coord m);
 
     signals:
