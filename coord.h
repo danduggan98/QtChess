@@ -1,13 +1,13 @@
-#ifndef MOVE_H
-#define MOVE_H
+#ifndef COORD_H
+#define COORD_H
 
-class Move {
+class Coord {
     private:
         int x_;
         int y_;
 
     public:
-        Move(int x, int y) {
+        Coord(int x, int y) {
             x_ = x;
             y_ = y;
         }
@@ -15,4 +15,4 @@ class Move {
         int Y() { return y_; };
 };
 
-#endif // MOVE_H
+#endif // COORD_H

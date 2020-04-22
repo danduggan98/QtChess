@@ -1,7 +1,7 @@
 #ifndef PIECE_H
 #define PIECE_H
 
-#include "move.h"
+#include "coord.h"
 
 #include <QObject>
 #include <QColor>
@@ -16,7 +16,7 @@ class Piece : public QObject {
         int y_pos_;
         QString type_;
         char color_;
-        std::vector<Move> moveset_();
+        std::vector<Coord> moveset_();
 
     public:
         explicit Piece(int x, int y, QString type, char color, QObject *parent = nullptr);
@@ -26,8 +26,8 @@ class Piece : public QObject {
         char get_color() { return color_; };
 
         void DefineMoveset();
-        void MovePiece(Move m);
-        bool isValidMove(Move m);
+        void MovePiece(Coord m);
+        bool isValidMove(Coord m);
 
     signals:
 
