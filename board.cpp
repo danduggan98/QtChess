@@ -47,7 +47,23 @@ Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
 void Board::AddPiece(Piece *piece) {
     int r = piece->get_x();
     int c = piece->get_y();
-    board_[r][c]->SetPiece(piece);
+    GetSquareAt(Coord(r, c))->SetPiece(piece);
+}
+
+//Move a piece from one coordinate to another
+void Board::MovePiece(Coord from, Coord to) {
+    Square* f = GetSquareAt(from);
+    Square* t = GetSquareAt(to);
+
+    if (!f->isEmpty()) {
+        //Add the piece to the new square and remove it from the old one
+        t->SetPiece(f->get_piece());
+        f->RemovePiece();
+        t->get_piece()->ChangePos(to);
+    }
+    else {
+        qDebug() << "Square is empty. No piece to move.";
+    }
 }
 
 //Move the pieces to their starting positions

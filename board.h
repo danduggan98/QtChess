@@ -24,7 +24,9 @@ class Board : public QObject
         static Square* board_[numRows][numCols];
 
         explicit Board(QGraphicsView *view, QObject *parent = nullptr);
+        Square* GetSquareAt(Coord c) { return board_[c.X()][c.Y()]; }
         void AddPiece(Piece *piece);
+        void MovePiece(Coord from, Coord to);
         void Reset();
 };
 
