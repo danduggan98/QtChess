@@ -59,6 +59,7 @@ void Square::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 
     //Draw the piece icon if there is one
     if (!this->isEmpty()) {
+        painter->setOpacity(1.0);
         float x = width_ * x_val_ + 2;
         float y = height_ * y_val_ - 1;
 
