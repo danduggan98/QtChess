@@ -51,10 +51,27 @@ void Square::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     painter->setPen(Qt::NoPen);
     painter->setOpacity(0.8);
 
+    //Draw the square
     QBrush b = painter->brush();
     painter->setBrush(QBrush(color_));
     painter->drawRect(QRect(this->x_val_ * this->width_, this->y_val_ * this->height_, this->width_, this->height_));
     painter->setBrush(b);
+
+    //Draw the piece icon if there is one
+    if (!this->isEmpty()) {
+        float x = width_ * x_val_ + 2;
+        float y = height_ * y_val_ - 1;
+
+        //Construct the image file path
+        QString filepath = "/home/dan/Documents/School/Project-Workshop/Homeworks/HW5/FinalProject/FinalProject/pieces/";
+        filepath += QString(piece_->get_color()) + "_";
+        filepath += QString(piece_->get_type()) + ".svg";
+
+        //Paint the image as a pixmap
+        QPixmap pic(filepath);
+        pic = pic.scaled(width_, height_, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        painter->drawPixmap(x, y, pic);
+    }
 }
 
 //Respond when the square is clicked

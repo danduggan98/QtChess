@@ -101,5 +101,7 @@ void Board::Reset() {
     AddPiece(new Piece(0, 4, "king", 'b'));
     AddPiece(new Piece(7, 4, "king", 'w'));
 
+    //MovePiece(Coord(6,4), Coord(4,4));
+
     qDebug() << "Pieces set to their starting positions";
 }
