@@ -44,8 +44,15 @@ void MainWindow::SquareSelectedSlot(Square *s) {
         board_ptr->MovePiece(from, to);
         lastSelectedSquare = nullptr; //Reset the pointer so they can make the next move
     }
-    else {
+
+    //No piece previously selected - select this one if it has a piece on it
+    else if (s->get_piece()) {
         lastSelectedSquare = s;
+    }
+
+    //No piece on this square - nothing selected
+    else {
+        lastSelectedSquare = nullptr;
     }
     update();
 }
