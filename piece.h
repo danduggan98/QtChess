@@ -16,7 +16,7 @@ class Piece : public QObject {
         int y_pos_;
         QString type_;
         char color_;
-        std::vector<Coord> moveset_();
+        std::vector<Coord> moveset_;
 
     public:
         explicit Piece(int x, int y, QString type, char color, QObject *parent = nullptr);
