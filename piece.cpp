@@ -6,6 +6,7 @@ Piece::Piece(int x, int y, QString type, char color, QObject *parent) : QObject(
     y_pos_ = y;
     type_ = type;
     color_ = color;
+    moveset_ = {};
 
     DefineMoveset();
 }
@@ -23,4 +24,14 @@ void Piece::DefineMoveset() {
 void Piece::ChangePos(Coord m) {
     x_pos_ = m.X();
     y_pos_ = m.Y();
+}
+
+//See if a given coordinate is in our moveset, indicating it can be played
+bool Piece::isValidMove(Coord m) {
+    for (unsigned int i = 0; i < moveset_.size(); i++) {
+        if (moveset_[i] == m) {
+            return true;
+        }
+    }
+    return false;
 }
