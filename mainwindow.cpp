@@ -38,8 +38,10 @@ void MainWindow::SquareSelectedSlot(Square *s) {
 
     //If a square was previously selected, move the piece from that square to this one
     if (lastSelectedSquare) {
-        Square* previous = lastSelectedSquare;
-        board_ptr->MovePiece(Coord(previous->get_x(), previous->get_y()), Coord(s->get_x(), s->get_y()));
+        Coord from(lastSelectedSquare->get_x(), lastSelectedSquare->get_y());
+        Coord to(s->get_x(), s->get_y());
+
+        board_ptr->MovePiece(from, to);
         lastSelectedSquare = nullptr; //Reset the pointer so they can make the next move
     }
     else {
