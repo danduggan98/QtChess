@@ -18,6 +18,7 @@ class MainWindow : public QMainWindow {
 
     private:
         Board* board_ptr;
+        Square* lastSelectedSquare = nullptr;
 
         Ui::MainWindow *ui;
         QGraphicsScene *board_scene;
