@@ -28,7 +28,6 @@ class Square : public QObject, public QGraphicsItem {
 
         void RemovePiece();
         void SetPiece(Piece* piece);
-        void DisplayPiece();
 
         QRectF boundingRect() const override;
         QPainterPath shape() const override;

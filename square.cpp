@@ -25,12 +25,6 @@ void Square::SetPiece(Piece *piece) {
     empty_ = false;
 }
 
-//Show the icon for our piece on this square
-void Square::DisplayPiece() {
-    std::string filepath = "pieces/";
-    //UHHHH
-}
-
 //Set the square's boundaries
 QRectF Square::boundingRect() const {
     return QRectF(x_val_ * this->width_, y_val_ * this->height_, width_, height_);
