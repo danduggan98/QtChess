@@ -28,9 +28,6 @@ class Piece : public QObject {
         void DefineMoveset();
         void ChangePos(Coord m);
         bool isValidMove(Coord m);
-
-    signals:
-
 };
 
 #endif // PIECE_H
