@@ -55,11 +55,20 @@ void Board::MovePiece(Coord from, Coord to) {
     Square* fromSquare = GetSquareAt(from);
     Square* toSquare = GetSquareAt(to);
 
-    //Add the piece to the new square and remove it from the old one
+    //Check that they selected a piece
     if (!fromSquare->isEmpty()) {
-        toSquare->SetPiece(fromSquare->get_piece());
-        fromSquare->get_piece()->ChangePos(to);
-        fromSquare->RemovePiece();
+
+        //Check that they selected two different squares
+        if(fromSquare != toSquare) {
+
+            //Add the piece to the new square and remove it from the old one
+            toSquare->SetPiece(fromSquare->get_piece());
+            fromSquare->get_piece()->ChangePos(to);
+            fromSquare->RemovePiece();
+        }
+        else {
+            qDebug() << "Selected same piece twice. No action taken.";
+        }
     }
     else {
         qDebug() << "Square is empty. No piece to move.";
