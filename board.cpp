@@ -34,7 +34,7 @@ Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
             //Add the square to both the board and the scene
             Square* s = new Square(i, j, square_width_, square_height_,
                                    true, square_color);
-            board_[j][i] = s;
+            board_[i][j] = s;
             board_scene_->addItem(s);
         }
     }
@@ -52,14 +52,14 @@ void Board::AddPiece(Piece *piece) {
 
 //Move a piece from one coordinate to another
 void Board::MovePiece(Coord from, Coord to) {
-    Square* f = GetSquareAt(from);
-    Square* t = GetSquareAt(to);
+    Square* fromSquare = GetSquareAt(from);
+    Square* toSquare = GetSquareAt(to);
 
-    if (!f->isEmpty()) {
-        //Add the piece to the new square and remove it from the old one
-        t->SetPiece(f->get_piece());
-        f->RemovePiece();
-        t->get_piece()->ChangePos(to);
+    //Add the piece to the new square and remove it from the old one
+    if (!fromSquare->isEmpty()) {
+        toSquare->SetPiece(fromSquare->get_piece());
+        fromSquare->get_piece()->ChangePos(to);
+        fromSquare->RemovePiece();
     }
     else {
         qDebug() << "Square is empty. No piece to move.";
@@ -71,35 +71,35 @@ void Board::Reset() {
 
     //Pawns
     for (int i = 0; i < Board::numCols; i++) {
-        AddPiece(new Piece(1, i, "pawn", 'b')); //Black pawns
-        AddPiece(new Piece(6, i, "pawn", 'w')); //White pawns
+        AddPiece(new Piece(i, 1, "pawn", 'b')); //Black pawns
+        AddPiece(new Piece(i, 6, "pawn", 'w')); //White pawns
     }
 
     //Rooks
     AddPiece(new Piece(0, 0, "rook", 'b'));
-    AddPiece(new Piece(0, 7, "rook", 'b'));
-    AddPiece(new Piece(7, 0, "rook", 'w'));
+    AddPiece(new Piece(7, 0, "rook", 'b'));
+    AddPiece(new Piece(0, 7, "rook", 'w'));
     AddPiece(new Piece(7, 7, "rook", 'w'));
 
     //Knights
-    AddPiece(new Piece(0, 1, "knight", 'b'));
-    AddPiece(new Piece(0, 6, "knight", 'b'));
-    AddPiece(new Piece(7, 1, "knight", 'w'));
-    AddPiece(new Piece(7, 6, "knight", 'w'));
+    AddPiece(new Piece(1, 0, "knight", 'b'));
+    AddPiece(new Piece(6, 0, "knight", 'b'));
+    AddPiece(new Piece(1, 7, "knight", 'w'));
+    AddPiece(new Piece(6, 7, "knight", 'w'));
 
     //Bishops
-    AddPiece(new Piece(0, 2, "bishop", 'b'));
-    AddPiece(new Piece(0, 5, "bishop", 'b'));
-    AddPiece(new Piece(7, 2, "bishop", 'w'));
-    AddPiece(new Piece(7, 5, "bishop", 'w'));
+    AddPiece(new Piece(2, 0, "bishop", 'b'));
+    AddPiece(new Piece(5, 0, "bishop", 'b'));
+    AddPiece(new Piece(2, 7, "bishop", 'w'));
+    AddPiece(new Piece(5, 7, "bishop", 'w'));
 
     //Queens
-    AddPiece(new Piece(0, 3, "queen", 'b'));
-    AddPiece(new Piece(7, 3, "queen", 'w'));
+    AddPiece(new Piece(3, 0, "queen", 'b'));
+    AddPiece(new Piece(3, 7, "queen", 'w'));
 
     //Kings
-    AddPiece(new Piece(0, 4, "king", 'b'));
-    AddPiece(new Piece(7, 4, "king", 'w'));
+    AddPiece(new Piece(4, 0, "king", 'b'));
+    AddPiece(new Piece(4, 7, "king", 'w'));
 
     qDebug() << "Pieces set to their starting positions";
 }
