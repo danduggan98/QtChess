@@ -30,12 +30,22 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::SquareSelectedSlot(Square *s) {
     qDebug() << "Selected square (" << s->get_x() << ", " << s->get_y() << ")";
-
     if (!s->isEmpty()) {
         qDebug() << "Square contains a " << s->get_piece()->get_color() << s->get_piece()->get_type();
     } else {
         qDebug() << "Square is empty";
     }
+
+    //If a square was previously selected, move the piece from that square to this one
+    if (lastSelectedSquare) {
+        Square* previous = lastSelectedSquare;
+        board_ptr->MovePiece(Coord(previous->get_x(), previous->get_y()), Coord(s->get_x(), s->get_y()));
+        lastSelectedSquare = nullptr; //Reset the pointer so they can make the next move
+    }
+    else {
+        lastSelectedSquare = s;
+    }
+    update();
 }
 
 MainWindow::~MainWindow() {
