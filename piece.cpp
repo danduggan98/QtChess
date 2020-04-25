@@ -8,6 +8,7 @@ Piece::Piece(int x, int y, QString type, char color, QObject *parent) : QObject(
     color_ = color;
     real_moveset_ = {};
     potential_moveset_ = {};
+    times_moved = 0;
 
     CreatePotentialMoveset();
 }
@@ -16,6 +17,7 @@ Piece::Piece(int x, int y, QString type, char color, QObject *parent) : QObject(
 void Piece::ChangePos(Coord m) {
     x_pos_ = m.X();
     y_pos_ = m.Y();
+    times_moved++;
 
     CreatePotentialMoveset(); //Update the potential moves
 }
@@ -27,9 +29,11 @@ void Piece::CreatePotentialMoveset() {
     //Add the possible moveset for each piece
     //INCOMPLETE
     if (type_ == "pawn") {
+        if (times_moved == 0) { //Can move two spaces on first turn
+            potential_moveset_.push_back(Coord(x_pos_, y_pos_ - 2));
+        }
         potential_moveset_.push_back(Coord(x_pos_ - 1, y_pos_ - 1));
         potential_moveset_.push_back(Coord(x_pos_, y_pos_ - 1));
-        potential_moveset_.push_back(Coord(x_pos_, y_pos_ - 2));
         potential_moveset_.push_back(Coord(x_pos_ + 1, y_pos_ - 1));
     }
     //PLACEHOLDER
