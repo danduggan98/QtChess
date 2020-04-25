@@ -28,6 +28,8 @@ class Board : public QObject
         void AddPiece(Piece *piece);
         void MovePiece(Coord from, Coord to);
         void Reset();
+        void DefineMoveset(Piece* p);
+        bool ContainsAlly(Coord c1, Coord c2);
 };
 
 #endif // BOARD_H

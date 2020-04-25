@@ -45,9 +45,7 @@ Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
 
 //Add a piece at its x and y positions on the board
 void Board::AddPiece(Piece *piece) {
-    int r = piece->get_x();
-    int c = piece->get_y();
-    GetSquareAt(Coord(r, c))->SetPiece(piece);
+    GetSquareAt(piece->get_coords())->SetPiece(piece);
 }
 
 //Move a piece from one coordinate to another
@@ -111,4 +109,27 @@ void Board::Reset() {
     AddPiece(new Piece(4, 7, "king", 'w'));
 
     qDebug() << "Pieces set to their starting positions";
+}
+
+//Determine a moveset for a piece, and pass it to the piece itself
+void Board::DefineMoveset(Piece* p) {
+    std::vector<Coord> new_moveset;
+
+    p->UpdateMoveset(new_moveset);
+
+}
+
+//See if a coordinate contains a piece of the same color
+bool Board::ContainsAlly(Coord c1, Coord c2) {
+
+    Piece* p1 = GetSquareAt(c1)->get_piece();
+    Piece* p2 = GetSquareAt(c2)->get_piece();
+
+    //See if both squares have pieces
+    if (p1 && p2) {
+        if (p1->get_color() == p2->get_color()) {
+            return true;
+        }
+    }
+    return false;
 }
