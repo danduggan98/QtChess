@@ -45,6 +45,7 @@ Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
 
 //Add a piece at its x and y positions on the board
 void Board::AddPiece(Piece *piece) {
+    DefineMoveset(piece);
     GetSquareAt(piece->get_coords())->SetPiece(piece);
 }
 
