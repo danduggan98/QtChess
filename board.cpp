@@ -45,8 +45,8 @@ Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
 
 //Add a piece at its x and y positions on the board
 void Board::AddPiece(Piece *piece) {
-    DefineMoveset(piece);
     GetSquareAt(piece->get_coords())->SetPiece(piece);
+    DefineMoveset(piece);
 }
 
 //Move a piece from one coordinate to another
@@ -60,13 +60,17 @@ void Board::MovePiece(Coord from, Coord to) {
         //Check that they selected two different squares
         if(fromSquare != toSquare) {
 
-            //Add the piece to the new square and remove it from the old one
-            toSquare->SetPiece(fromSquare->get_piece());
-            fromSquare->get_piece()->ChangePos(to);
-            fromSquare->RemovePiece();
+            //Check that the move is valid
+            if (fromSquare->get_piece()->IsValidMove(to)) {
 
-            //Update the moves for each piece now that positions have changed
-            UpdateMovesets();
+                //Add the piece to the new square and remove it from the old one
+                toSquare->SetPiece(fromSquare->get_piece());
+                fromSquare->get_piece()->ChangePos(to);
+                fromSquare->RemovePiece();
+
+                //Update the moves for each piece now that positions have changed
+                UpdateMovesets();
+            }
         }
         else {
             qDebug() << "Selected same piece twice. No action taken.";
@@ -118,18 +122,22 @@ void Board::Reset() {
 //Determine a moveset for a piece, and pass it to the piece itself
 void Board::DefineMoveset(Piece* p) {
     std::vector<Coord> new_moveset;
-    int p_x = p->get_x();
-    int p_y = p->get_y();
 
-    /*if (p->get_type() == "pawn") {
-        new_moveset.push_back(Coord(p_x - 1, p_y - 1));
-        new_moveset.push_back(Coord(p_x, p_y - 1));
-        new_moveset.push_back(Coord(p_x, p_y - 2));
-        new_moveset.push_back(Coord(p_x + 1, p_y - 1));
-    }*/
+    std::vector<Coord> potential_moveset = p->get_potential_moves();
+    Coord p_coords = p->get_coords();
 
+    //Iterate through the theoretical moves and see which are possible in this position
+    for (unsigned int i = 0; i < potential_moveset.size(); i++) {
+        Coord potential_move = potential_moveset[i];
 
-    p->UpdateMoveset(new_moveset);
+        if (potential_move.isOnBoard()) {
+            if (!ContainsAlly(p_coords, potential_move)) {
+                new_moveset.push_back(potential_move);
+            }
+        }
+    }
+
+    p->SetMoveset(new_moveset);
 
 }
 
