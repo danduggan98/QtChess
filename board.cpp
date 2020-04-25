@@ -63,6 +63,9 @@ void Board::MovePiece(Coord from, Coord to) {
             toSquare->SetPiece(fromSquare->get_piece());
             fromSquare->get_piece()->ChangePos(to);
             fromSquare->RemovePiece();
+
+            //Update the moves for each piece now that positions have changed
+            UpdateMovesets();
         }
         else {
             qDebug() << "Selected same piece twice. No action taken.";
@@ -117,6 +120,20 @@ void Board::DefineMoveset(Piece* p) {
 
     p->UpdateMoveset(new_moveset);
 
+}
+
+//Define new movesets for every piece
+void Board::UpdateMovesets() {
+    for (int i = 0; i < numRows; i++) {
+        for (int j = 0; j < numCols; j++) {
+            Coord pos(i,j);
+            Piece* curPiece = GetSquareAt(pos)->get_piece();
+
+            if (curPiece) {
+                DefineMoveset(curPiece);
+            }
+        }
+    }
 }
 
 //See if a coordinate contains a piece of the same color

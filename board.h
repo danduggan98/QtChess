@@ -29,6 +29,7 @@ class Board : public QObject
         void MovePiece(Coord from, Coord to);
         void Reset();
         void DefineMoveset(Piece* p);
+        void UpdateMovesets();
         bool ContainsAlly(Coord c1, Coord c2);
 };
 
