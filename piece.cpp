@@ -17,10 +17,17 @@ void Piece::ChangePos(Coord m) {
 
 //See if a given coordinate is in our moveset, indicating it can be played
 bool Piece::IsValidMove(Coord m) {
-    for (unsigned int i = 0; i < moveset_.size(); i++) {
-        if (moveset_[i] == m) {
-            return true;
+
+    //Check that the move is actually on the board
+    if (m.X() >= 0 && m.X() < 8 && m.Y() >= 0 && m.Y() < 8) {
+
+        //Look for the move in our moveset
+        for (unsigned int i = 0; i < moveset_.size(); i++) {
+            if (moveset_[i] == m) {
+                return true;
+            }
         }
     }
+
     return false;
 }
