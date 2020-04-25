@@ -31,6 +31,7 @@ class Board : public QObject
         void DefineMoveset(Piece* p);
         void UpdateMovesets();
         bool ContainsAlly(Coord c1, Coord c2);
+        bool ContainsEnemy(Coord c1, Coord c2);
 };
 
 #endif // BOARD_H

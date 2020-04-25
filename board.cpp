@@ -118,6 +118,16 @@ void Board::Reset() {
 //Determine a moveset for a piece, and pass it to the piece itself
 void Board::DefineMoveset(Piece* p) {
     std::vector<Coord> new_moveset;
+    int p_x = p->get_x();
+    int p_y = p->get_y();
+
+    /*if (p->get_type() == "pawn") {
+        new_moveset.push_back(Coord(p_x - 1, p_y - 1));
+        new_moveset.push_back(Coord(p_x, p_y - 1));
+        new_moveset.push_back(Coord(p_x, p_y - 2));
+        new_moveset.push_back(Coord(p_x + 1, p_y - 1));
+    }*/
+
 
     p->UpdateMoveset(new_moveset);
 
@@ -146,6 +156,21 @@ bool Board::ContainsAlly(Coord c1, Coord c2) {
     //See if both squares have pieces
     if (p1 && p2) {
         if (p1->get_color() == p2->get_color()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+//See if a coordinate contains a piece of a different color
+bool Board::ContainsEnemy(Coord c1, Coord c2) {
+
+    Piece* p1 = GetSquareAt(c1)->get_piece();
+    Piece* p2 = GetSquareAt(c2)->get_piece();
+
+    //See if both squares have pieces
+    if (p1 && p2) {
+        if (p1->get_color() != p2->get_color()) {
             return true;
         }
     }
