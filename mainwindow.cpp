@@ -41,6 +41,8 @@ void MainWindow::SquareSelectedSlot(Square *s) {
         Coord from = lastSelectedSquare->get_coords();
         Coord to = s->get_coords();
 
+        qDebug() << "VALID MOVE? -" << lastSelectedSquare->get_piece()->IsValidMove(to); //TESTING
+
         board_ptr->MovePiece(from, to);
         lastSelectedSquare = nullptr; //Reset the pointer so they can make the next move
     }
