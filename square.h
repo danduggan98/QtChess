@@ -23,6 +23,7 @@ class Square : public QObject, public QGraphicsItem {
 
         int get_x() { return x_val_; };
         int get_y() { return y_val_; };
+        Coord get_coords() { return Coord(x_val_, y_val_); };
         bool isEmpty() { return empty_; };
         Piece* get_piece() { return piece_; };
 
