@@ -7,17 +7,6 @@ Piece::Piece(int x, int y, QString type, char color, QObject *parent) : QObject(
     type_ = type;
     color_ = color;
     moveset_ = {};
-
-    DefineMoveset();
-}
-
-//Determine which moves this piece can make given its type
-void Piece::DefineMoveset() {
-
-    //Differs based on piece type
-    /*if (type_ == "pawn") {
-        etc...
-    }*/
 }
 
 //Move the piece to a new square
@@ -27,7 +16,7 @@ void Piece::ChangePos(Coord m) {
 }
 
 //See if a given coordinate is in our moveset, indicating it can be played
-bool Piece::isValidMove(Coord m) {
+bool Piece::IsValidMove(Coord m) {
     for (unsigned int i = 0; i < moveset_.size(); i++) {
         if (moveset_[i] == m) {
             return true;

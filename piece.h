@@ -22,12 +22,13 @@ class Piece : public QObject {
         explicit Piece(int x, int y, QString type, char color, QObject *parent = nullptr);
         int get_x() { return x_pos_; };
         int get_y() { return y_pos_; };
+        Coord get_coords() { return Coord(x_pos_, y_pos_); };
         QString get_type() { return type_; };
         char get_color() { return color_; };
 
-        void DefineMoveset();
         void ChangePos(Coord m);
-        bool isValidMove(Coord m);
+        void UpdateMoveset(std::vector<Coord> new_moveset) { moveset_ = new_moveset; };
+        bool IsValidMove(Coord m);
 };
 
 #endif // PIECE_H
