@@ -197,7 +197,14 @@ void Board::DefinePotentialMoveset(Piece* p) {
         }
     }
     else if (type == "knight") {
-
+        potential_moveset.push_back(Coord(x-2, y-1)); //Left
+        potential_moveset.push_back(Coord(x-2, y+1));
+        potential_moveset.push_back(Coord(x-1, y+2)); //Up
+        potential_moveset.push_back(Coord(x+1, y+2));
+        potential_moveset.push_back(Coord(x+2, y-1)); //Right
+        potential_moveset.push_back(Coord(x+2, y+1));
+        potential_moveset.push_back(Coord(x-1, y-2)); //Down
+        potential_moveset.push_back(Coord(x+1, y-2));
     }
     else if (type == "queen") {
         for (int i = x - numCols; i < x + numCols; i++) { //Horizontal
