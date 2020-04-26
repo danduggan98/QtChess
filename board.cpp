@@ -214,7 +214,14 @@ void Board::DefinePotentialMoveset(Piece* p) {
         }
     }
     else if (type == "king") {
-
+        potential_moveset.push_back(Coord(x-1, y)); //Sides
+        potential_moveset.push_back(Coord(x+1, y));
+        potential_moveset.push_back(Coord(x-1, y-1)); //Forward
+        potential_moveset.push_back(Coord(x+1, y-1));
+        potential_moveset.push_back(Coord(x, y-1));
+        potential_moveset.push_back(Coord(x-1, y+1)); //Backward
+        potential_moveset.push_back(Coord(x+1, y+1));
+        potential_moveset.push_back(Coord(x, y+1));
     }
 
     p->SetPotentialMoveset(potential_moveset);
