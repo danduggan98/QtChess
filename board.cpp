@@ -153,6 +153,7 @@ void Board::DefinePotentialMoveset(Piece* p) {
 
     //Add the possible moveset for each piece
     //INCOMPLETE
+    //DOES NOT TAKE INTO ACCOUNT MOVES THAT ARE "BLOCKED" BY OTHER PIECES, ALLY OR ENEMY
     if (type == "pawn") {
 
         //One square forward
@@ -194,6 +195,26 @@ void Board::DefinePotentialMoveset(Piece* p) {
         for (int i = x - numCols, j = y + numRows; i < x + numCols; i++, j--) { //Diagonal from bottom left to top right
             potential_moveset.push_back(Coord(i, j));
         }
+    }
+    else if (type == "knight") {
+
+    }
+    else if (type == "queen") {
+        for (int i = x - numCols; i < x + numCols; i++) { //Horizontal
+            potential_moveset.push_back(Coord(i, y));
+        }
+        for (int i = y - numRows; i < y + numRows; i++) { //Vertical
+            potential_moveset.push_back(Coord(x, i));
+        }
+        for (int i = x - numCols, j = y - numRows; i < x + numCols; i++, j++) { //Diagonal from top left to bottom right
+            potential_moveset.push_back(Coord(i, j));
+        }
+        for (int i = x - numCols, j = y + numRows; i < x + numCols; i++, j--) { //Diagonal from bottom left to top right
+            potential_moveset.push_back(Coord(i, j));
+        }
+    }
+    else if (type == "king") {
+
     }
 
     p->SetPotentialMoveset(potential_moveset);
