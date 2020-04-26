@@ -46,6 +46,7 @@ Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
 //Add a piece at its x and y positions on the board
 void Board::AddPiece(Piece *piece) {
     GetSquareAt(piece->get_coords())->SetPiece(piece);
+    DefinePotentialMoveset(piece);
     DefineMoveset(piece);
 }
 
@@ -68,7 +69,7 @@ void Board::MovePiece(Coord from, Coord to) {
                 fromSquare->get_piece()->ChangePos(to);
                 fromSquare->RemovePiece();
 
-                //Update the moves for each piece now that positions have changed
+                //Update the real and potential moves for each piece now that positions have changed
                 UpdateMovesets();
             }
         }
@@ -119,7 +120,7 @@ void Board::Reset() {
     qDebug() << "Pieces set to their starting positions";
 }
 
-//Determine a moveset for a piece, and pass it to the piece itself
+//Determine the valid moves for a piece, and pass them to the piece itself
 void Board::DefineMoveset(Piece* p) {
     std::vector<Coord> new_moveset;
 
@@ -136,9 +137,30 @@ void Board::DefineMoveset(Piece* p) {
             }
         }
     }
-
     p->SetMoveset(new_moveset);
+}
 
+//Determine the potential moves for a piece and pass them to the piece itself
+void Board::DefinePotentialMoveset(Piece* p) {
+    std::vector<Coord> potential_moveset;
+
+    int dist = (p->get_color() == 'w') ? 1 : -1; //Represents one move in either direction - positive(up) for white and negative(down) for black
+    int x = p->get_x();
+    int y = p->get_y();
+    int times_moved = p->get_times_moved();
+    QString type = p->get_type();
+
+    //Add the possible moveset for each piece
+    //INCOMPLETE
+    if (type == "pawn") {
+        if (times_moved == 0) { //Can move two spaces on first turn
+            potential_moveset.push_back(Coord(x, y - (2*dist)));
+        }
+        potential_moveset.push_back(Coord(x - dist, y - dist)); //Capture left (HAVE TO CHECK BOARD STATE FOR THESE - CONSIDER MOVING TO BOARD CLASS)!!!!!!!!!!!!!!!
+        potential_moveset.push_back(Coord(x + dist, y - dist)); //Caputre Right
+        potential_moveset.push_back(Coord(x, y- dist));         //One square forward
+    }
+    p->SetPotentialMoveset(potential_moveset);
 }
 
 //Define new movesets for every piece
@@ -149,6 +171,7 @@ void Board::UpdateMovesets() {
             Piece* curPiece = GetSquareAt(pos)->get_piece();
 
             if (curPiece) {
+                DefinePotentialMoveset(curPiece);
                 DefineMoveset(curPiece);
             }
         }
