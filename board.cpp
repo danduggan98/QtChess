@@ -180,11 +180,19 @@ void Board::DefinePotentialMoveset(Piece* p) {
         }
     }
     else if (type == "rook") {
-        for (int i = x - numCols; i < x + numCols; i++) {
+        for (int i = x - numCols; i < x + numCols; i++) { //Horizontal
             potential_moveset.push_back(Coord(i, y));
         }
-        for (int i = y - numRows; i < y + numRows; i++) {
+        for (int i = y - numRows; i < y + numRows; i++) { //Vertical
             potential_moveset.push_back(Coord(x, i));
+        }
+    }
+    else if (type == "bishop") {
+        for (int i = x - numCols, j = y - numRows; i < x + numCols; i++, j++) { //Diagonal from top left to bottom right
+            potential_moveset.push_back(Coord(i, j));
+        }
+        for (int i = x - numCols, j = y + numRows; i < x + numCols; i++, j--) { //Diagonal from bottom left to top right
+            potential_moveset.push_back(Coord(i, j));
         }
     }
 
