@@ -144,21 +144,40 @@ void Board::DefineMoveset(Piece* p) {
 void Board::DefinePotentialMoveset(Piece* p) {
     std::vector<Coord> potential_moveset;
 
-    int dist = (p->get_color() == 'w') ? 1 : -1; //Represents one move in either direction - positive(up) for white and negative(down) for black
+    int dir = (p->get_color() == 'w') ? 1 : -1; //Sign indicates direction of moves - positive (up) for white and negative (down) for black
     int x = p->get_x();
     int y = p->get_y();
+    Coord cur = p->get_coords();
     int times_moved = p->get_times_moved();
     QString type = p->get_type();
 
     //Add the possible moveset for each piece
     //INCOMPLETE
     if (type == "pawn") {
-        if (times_moved == 0) { //Can move two spaces on first turn
-            potential_moveset.push_back(Coord(x, y - (2*dist)));
+
+        //One square forward
+        Coord oneFwd(x, y - dir);
+        if (oneFwd.isOnBoard() && !ContainsEnemy(cur, oneFwd)) {
+            potential_moveset.push_back(oneFwd);
         }
-        potential_moveset.push_back(Coord(x - dist, y - dist)); //Capture left (HAVE TO CHECK BOARD STATE FOR THESE - CONSIDER MOVING TO BOARD CLASS)!!!!!!!!!!!!!!!
-        potential_moveset.push_back(Coord(x + dist, y - dist)); //Caputre Right
-        potential_moveset.push_back(Coord(x, y- dist));         //One square forward
+
+        //Two squares forward - only on first turn
+        Coord twoFwd(x, y - (2*dir));
+        if (twoFwd.isOnBoard() && times_moved == 0 && !ContainsEnemy(cur, twoFwd)) {
+            potential_moveset.push_back(twoFwd);
+        }
+
+        //Capture an enemy to the left
+        Coord leftCapture(x - dir, y - dir);
+        if (leftCapture.isOnBoard() && ContainsEnemy(cur, leftCapture)) {
+            potential_moveset.push_back(leftCapture);
+        }
+
+        //Capture an enemy to the right
+        Coord rightCapture(x + dir, y - dir);
+        if (rightCapture.isOnBoard() && ContainsEnemy(cur, rightCapture)) {
+            potential_moveset.push_back(rightCapture);
+        }
     }
     p->SetPotentialMoveset(potential_moveset);
 }
