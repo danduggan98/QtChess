@@ -179,6 +179,15 @@ void Board::DefinePotentialMoveset(Piece* p) {
             potential_moveset.push_back(rightCapture);
         }
     }
+    else if (type == "rook") {
+        for (int i = x - numCols; i < x + numCols; i++) {
+            potential_moveset.push_back(Coord(i, y));
+        }
+        for (int i = y - numRows; i < y + numRows; i++) {
+            potential_moveset.push_back(Coord(x, i));
+        }
+    }
+
     p->SetPotentialMoveset(potential_moveset);
 }
 
