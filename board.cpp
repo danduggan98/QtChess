@@ -144,7 +144,6 @@ void Board::DefineMoveset(Piece* p) {
 void Board::DefinePotentialMoveset(Piece* p) {
     std::vector<Coord> potential_moveset;
 
-    int dir = (p->get_color() == 'w') ? 1 : -1; //Sign indicates direction of moves - positive (up) for white and negative (down) for black
     int x = p->get_x();
     int y = p->get_y();
     Coord cur = p->get_coords();
@@ -156,7 +155,10 @@ void Board::DefinePotentialMoveset(Piece* p) {
     //DOES NOT TAKE INTO ACCOUNT MOVES THAT ARE "BLOCKED" BY OTHER PIECES, ALLY OR ENEMY
     // FIX - MERGE MOVESET DEF FUNCTIONS TOGETHER - START CHECKIGN IN EACH DIRECITON AND STOP WHEN YOU HIT ANOTHER PIECE
     // IF THAT'S AN ENEMY, INCLUDE IT IN THE MOVESET, ELSE JUST STOP
+
     if (type == "pawn") {
+
+        int dir = (p->get_color() == 'w') ? 1 : -1; //Sign indicates direction of pawn moves - positive (up) for white and negative (down) for black
 
         //One square forward
         Coord oneFwd(x, y - dir);
@@ -182,12 +184,35 @@ void Board::DefinePotentialMoveset(Piece* p) {
             potential_moveset.push_back(rightCapture);
         }
     }
+
     else if (type == "rook") {
-        for (int i = x - numCols; i < x + numCols; i++) { //Horizontal
-            potential_moveset.push_back(Coord(i, y));
+
+        //Left horizontal
+        for (int i = x - 1; i >= 0; i--) {                    //The following design pattern will be used throughout this function:
+            if (ContainsAlly(cur, Coord(i, y))) { break; }    // Ally in the way - block everything including and beyond it
+            potential_moveset.push_back(Coord(i, y));         // Add the square if nothing is in the way
+            if (ContainsEnemy(cur, Coord(i, y))) { break; }   // Enemy in the way - add the enemy (previous line) but block everything beyond it
         }
-        for (int i = y - numRows; i < y + numRows; i++) { //Vertical
+
+        //Right horizontal
+        for (int i = x + 1; i < Board::numCols; i++) {
+            if (ContainsAlly(cur, Coord(i, y))) { break; }
+            potential_moveset.push_back(Coord(i, y));
+            if (ContainsEnemy(cur, Coord(i, y))) { break; }
+        }
+
+        //Upper vertical
+        for (int i = y - 1; i >= 0; i--) {
+            if (ContainsAlly(cur, Coord(x, i))) { break; }
             potential_moveset.push_back(Coord(x, i));
+            if (ContainsEnemy(cur, Coord(x, i))) { break; }
+        }
+
+        //Lower vertical
+        for (int i = y + 1; i < Board::numRows; i++) {
+            if (ContainsAlly(cur, Coord(x, i))) { break; }
+            potential_moveset.push_back(Coord(x, i));
+            if (ContainsEnemy(cur, Coord(x, i))) { break; }
         }
     }
     else if (type == "bishop") {
