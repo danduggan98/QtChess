@@ -43,13 +43,6 @@ Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
     Reset();
 }
 
-//Add a piece at its x and y positions on the board
-void Board::AddPiece(Piece *piece) {
-    GetSquareAt(piece->get_coords())->SetPiece(piece);
-    DefinePotentialMoveset(piece);
-    DefineMoveset(piece);
-}
-
 //Move a piece from one coordinate to another
 void Board::MovePiece(Coord from, Coord to) {
     Square* fromSquare = GetSquareAt(from);
@@ -118,6 +111,7 @@ void Board::Reset() {
     AddPiece(new Piece(4, 7, "king", 'w'));
 
     qDebug() << "Pieces set to their starting positions";
+    UpdateMovesets();
 }
 
 //Determine the valid moves for a piece, and pass them to the piece itself
@@ -140,10 +134,43 @@ void Board::DefineMoveset(Piece* p) {
     p->SetMoveset(new_moveset);
 }
 
-//Check if a single move is valid, add it if so
-void Board::AddMove(Coord startPos, Coord newPos, std::vector<Coord> &temp_moveset) {
-    if (newPos.isOnBoard() && !ContainsAlly(startPos, newPos)) {
-        temp_moveset.push_back(newPos);
+//Check if a single move is valid, add it if so (Used only by knight)
+void Board::AddMove(Coord startPos, Coord endPos, std::vector<Coord> &temp_moveset) {
+    if (endPos.isOnBoard() && !ContainsAlly(startPos, endPos)) {
+        temp_moveset.push_back(endPos);
+    }
+}
+
+//Check for valid moves at all squares in between two coordinates - includes blocking
+void Board::AddMovespace(Coord startPos, Coord endPos, std::vector<Coord> &temp_moveset) {
+
+    int x = startPos.X();
+    int y = startPos.Y();
+    int endX = endPos.X();
+    int endY = endPos.Y();
+
+    int deltaX = endX - x;
+    int deltaY = endY - y;
+
+    int xAdjust = deltaX == 0 ? 0 : (deltaX > 0 ? 1 : -1); //Zero or sign of delta x
+    int yAdjust = deltaY == 0 ? 0 : (deltaY > 0 ? 1 : -1); //Zero or sign of delta y
+
+    //Go until both axes reach their end squares
+    while (x != endX + xAdjust || y != endY + yAdjust) {
+        Coord newPos(x, y);
+
+        if (newPos.isOnBoard() && newPos != startPos) {          //Don't add the current square or any invalid coordinates
+            if (GetSquareAt(newPos)->isEmpty()) {                //Empty square - add it
+                temp_moveset.push_back(newPos);
+            }
+            else {
+                if (ContainsAlly(startPos, newPos)) { break; }   // Ally in the way - block everything including and beyond it
+                temp_moveset.push_back(newPos);
+                if (ContainsEnemy(startPos, newPos)) { break; }  // Enemy in the way - add the enemy (previous line) but block everything beyond it
+            }
+        }
+        x += xAdjust;
+        y += yAdjust;
     }
 }
 
@@ -194,22 +221,10 @@ void Board::DefinePotentialMoveset(Piece* p) {
     }
 
     //ROOKS
-    /*else if (type == "rook") {
+    else if (type == "rook") {
 
         //Left horizontal
-        for (int i = x - 1; i >= 0; i--) {
-            Coord newPos(i, y);
-            if (newPos.isOnBoard()) {
-                if (GetSquareAt(newPos)->isEmpty()) {
-                    potential_moveset.push_back(newPos);
-                }
-                else {                                           //The following design pattern will be used throughout this function:
-                    if (ContainsAlly(cur, newPos)) { break; }    // Ally in the way - block everything including and beyond it
-                    potential_moveset.push_back(newPos);         // Add the square if nothing is in the way
-                    if (ContainsEnemy(cur, newPos)) { break; }   // Enemy in the way - add the enemy (previous line) but block everything beyond it
-                }
-            }
-        }
+        AddMovespace(cur, Coord(0, y), potential_moveset);
 
         //Right horizontal
         for (int i = x + 1; i < Board::numCols; i++) {
@@ -322,16 +337,16 @@ void Board::DefinePotentialMoveset(Piece* p) {
     }
 
     //KNIGHTS
-    else*/ if (type == "knight") {
+    else if (type == "knight") {
 
-        AddMove(cur, Coord(x-2, y-1), potential_moveset); //Left
-        AddMove(cur, Coord(x-2, y+1), potential_moveset);
-        AddMove(cur, Coord(x-1, y+2), potential_moveset); //Up
-        AddMove(cur, Coord(x+1, y+2), potential_moveset);
-        AddMove(cur, Coord(x+2, y-1), potential_moveset); //Right
-        AddMove(cur, Coord(x+2, y+1), potential_moveset);
-        AddMove(cur, Coord(x-1, y-2), potential_moveset); //Down
-        AddMove(cur, Coord(x+1, y-2), potential_moveset);
+        AddMove(cur, Coord(x - 2, y - 1), potential_moveset); //Left
+        AddMove(cur, Coord(x - 2, y + 1), potential_moveset);
+        AddMove(cur, Coord(x - 1, y + 2), potential_moveset); //Up
+        AddMove(cur, Coord(x + 1, y + 2), potential_moveset);
+        AddMove(cur, Coord(x + 2, y - 1), potential_moveset); //Right
+        AddMove(cur, Coord(x + 2, y + 1), potential_moveset);
+        AddMove(cur, Coord(x - 1, y - 2), potential_moveset); //Down
+        AddMove(cur, Coord(x + 1, y - 2), potential_moveset);
     }
 
     /*else if (type == "queen") {
