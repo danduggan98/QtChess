@@ -156,6 +156,7 @@ void Board::DefinePotentialMoveset(Piece* p) {
     // FIX - MERGE MOVESET DEF FUNCTIONS TOGETHER - START CHECKIGN IN EACH DIRECITON AND STOP WHEN YOU HIT ANOTHER PIECE
     // IF THAT'S AN ENEMY, INCLUDE IT IN THE MOVESET, ELSE JUST STOP
 
+    //PAWNS
     if (type == "pawn") {
 
         int dir = (p->get_color() == 'w') ? 1 : -1; //Sign indicates direction of pawn moves - positive (up) for white and negative (down) for black
@@ -185,42 +186,131 @@ void Board::DefinePotentialMoveset(Piece* p) {
         }
     }
 
+    //ROOKS
     else if (type == "rook") {
 
         //Left horizontal
-        for (int i = x - 1; i >= 0; i--) {                    //The following design pattern will be used throughout this function:
-            if (ContainsAlly(cur, Coord(i, y))) { break; }    // Ally in the way - block everything including and beyond it
-            potential_moveset.push_back(Coord(i, y));         // Add the square if nothing is in the way
-            if (ContainsEnemy(cur, Coord(i, y))) { break; }   // Enemy in the way - add the enemy (previous line) but block everything beyond it
+        for (int i = x - 1; i >= 0; i--) {
+            Coord newPos(i, y);
+            if (newPos.isOnBoard()) {
+                if (GetSquareAt(newPos)->isEmpty()) {
+                    potential_moveset.push_back(newPos);
+                }
+                else {                                           //The following design pattern will be used throughout this function:
+                    if (ContainsAlly(cur, newPos)) { break; }    // Ally in the way - block everything including and beyond it
+                    potential_moveset.push_back(newPos);         // Add the square if nothing is in the way
+                    if (ContainsEnemy(cur, newPos)) { break; }   // Enemy in the way - add the enemy (previous line) but block everything beyond it
+                }
+            }
         }
 
         //Right horizontal
         for (int i = x + 1; i < Board::numCols; i++) {
-            if (ContainsAlly(cur, Coord(i, y))) { break; }
-            potential_moveset.push_back(Coord(i, y));
-            if (ContainsEnemy(cur, Coord(i, y))) { break; }
+            Coord newPos(i, y);
+            if (newPos.isOnBoard()) {
+                if (GetSquareAt(newPos)->isEmpty()) {
+                    potential_moveset.push_back(newPos);
+                }
+                else {
+                    if (ContainsAlly(cur, newPos)) { break; }
+                    potential_moveset.push_back(newPos);
+                    if (ContainsEnemy(cur, newPos)) { break; }
+                }
+            }
         }
 
         //Upper vertical
         for (int i = y - 1; i >= 0; i--) {
-            if (ContainsAlly(cur, Coord(x, i))) { break; }
-            potential_moveset.push_back(Coord(x, i));
-            if (ContainsEnemy(cur, Coord(x, i))) { break; }
+            Coord newPos(x, i);
+            if (newPos.isOnBoard()) {
+                if (GetSquareAt(newPos)->isEmpty()) {
+                    potential_moveset.push_back(newPos);
+                }
+                else {
+                    if (ContainsAlly(cur, newPos)) { break; }
+                    potential_moveset.push_back(newPos);
+                    if (ContainsEnemy(cur, newPos)) { break; }
+                }
+            }
         }
 
         //Lower vertical
         for (int i = y + 1; i < Board::numRows; i++) {
-            if (ContainsAlly(cur, Coord(x, i))) { break; }
-            potential_moveset.push_back(Coord(x, i));
-            if (ContainsEnemy(cur, Coord(x, i))) { break; }
+            Coord newPos(x, i);
+            if (newPos.isOnBoard()) {
+                if (GetSquareAt(newPos)->isEmpty()) {
+                    potential_moveset.push_back(newPos);
+                }
+                else {
+                    if (ContainsAlly(cur, Coord(x, i))) { break; }
+                    potential_moveset.push_back(Coord(x, i));
+                    if (ContainsEnemy(cur, Coord(x, i))) { break; }
+                }
+            }
         }
     }
+
+    //BISHOPS
     else if (type == "bishop") {
-        for (int i = x - numCols, j = y - numRows; i < x + numCols; i++, j++) { //Diagonal from top left to bottom right
-            potential_moveset.push_back(Coord(i, j));
+
+        //Upper left diagonal
+        for (int i = x - 1, j = y - 1; i >= 0; i--, j--) {
+            Coord newPos(i, j);
+            if (newPos.isOnBoard()) {
+                if (GetSquareAt(newPos)->isEmpty()) {
+                    potential_moveset.push_back(newPos);
+                }
+                else {
+                    if (ContainsAlly(cur, newPos)) { break; }
+                    potential_moveset.push_back(newPos);
+                    if (ContainsEnemy(cur, newPos)) { break; }
+                }
+            }
         }
-        for (int i = x - numCols, j = y + numRows; i < x + numCols; i++, j--) { //Diagonal from bottom left to top right
-            potential_moveset.push_back(Coord(i, j));
+
+        //Upper right diagonal
+        for (int i = x + 1, j = y - 1; i < Board::numCols; i++, j--) {
+            Coord newPos(i, j);
+            if (newPos.isOnBoard()) {
+                if (GetSquareAt(newPos)->isEmpty()) {
+                    potential_moveset.push_back(newPos);
+                }
+                else {
+                    if (ContainsAlly(cur, newPos)) { break; }
+                    potential_moveset.push_back(newPos);
+                    if (ContainsEnemy(cur, newPos)) { break; }
+                }
+            }
+        }
+
+        //Lower left diagonal
+        for (int i = x - 1, j = y + 1; i >= 0; i--, j++) {
+            Coord newPos(i, j);
+            if (newPos.isOnBoard()) {
+                if (GetSquareAt(newPos)->isEmpty()) {
+                    potential_moveset.push_back(newPos);
+                }
+                else {
+                    if (ContainsAlly(cur, newPos)) { break; }
+                    potential_moveset.push_back(newPos);
+                    if (ContainsEnemy(cur, newPos)) { break; }
+                }
+            }
+        }
+
+        //Lower right diagonal
+        for (int i = x + 1, j = y + 1; i < Board::numCols; i++, j++) {
+            Coord newPos(i, j);
+            if (newPos.isOnBoard()) {
+                if (GetSquareAt(newPos)->isEmpty()) {
+                    potential_moveset.push_back(newPos);
+                }
+                else {
+                    if (ContainsAlly(cur, newPos)) { break; }
+                    potential_moveset.push_back(newPos);
+                    if (ContainsEnemy(cur, newPos)) { break; }
+                }
+            }
         }
     }
     else if (type == "knight") {
