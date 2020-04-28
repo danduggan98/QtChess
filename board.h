@@ -5,6 +5,7 @@
 
 #include <QObject>
 #include <QGraphicsView>
+#include <vector>
 
 class Board : public QObject
 {
@@ -28,9 +29,13 @@ class Board : public QObject
         void AddPiece(Piece *piece);
         void MovePiece(Coord from, Coord to);
         void Reset();
+
         void DefineMoveset(Piece* p);
         void DefinePotentialMoveset(Piece* p);
+        void AddMove(Coord startPos, Coord newPos, std::vector<Coord> &temp_moveset);
+        void AddMovespace();
         void UpdateMovesets();
+
         bool ContainsPiece(Coord c) { return !GetSquareAt(c)->isEmpty(); };
         bool ContainsAlly(Coord c1, Coord c2);
         bool ContainsEnemy(Coord c1, Coord c2);

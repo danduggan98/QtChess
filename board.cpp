@@ -140,6 +140,13 @@ void Board::DefineMoveset(Piece* p) {
     p->SetMoveset(new_moveset);
 }
 
+//Check if a single move is valid, add it if so
+void Board::AddMove(Coord startPos, Coord newPos, std::vector<Coord> &temp_moveset) {
+    if (newPos.isOnBoard() && !ContainsAlly(startPos, newPos)) {
+        temp_moveset.push_back(newPos);
+    }
+}
+
 //Determine the potential moves for a piece and pass them to the piece itself
 void Board::DefinePotentialMoveset(Piece* p) {
     std::vector<Coord> potential_moveset;
@@ -187,7 +194,7 @@ void Board::DefinePotentialMoveset(Piece* p) {
     }
 
     //ROOKS
-    else if (type == "rook") {
+    /*else if (type == "rook") {
 
         //Left horizontal
         for (int i = x - 1; i >= 0; i--) {
@@ -242,9 +249,9 @@ void Board::DefinePotentialMoveset(Piece* p) {
                     potential_moveset.push_back(newPos);
                 }
                 else {
-                    if (ContainsAlly(cur, Coord(x, i))) { break; }
-                    potential_moveset.push_back(Coord(x, i));
-                    if (ContainsEnemy(cur, Coord(x, i))) { break; }
+                    if (ContainsAlly(cur, newPos)) { break; }
+                    potential_moveset.push_back(newPos);
+                    if (ContainsEnemy(cur, newPos)) { break; }
                 }
             }
         }
@@ -313,17 +320,21 @@ void Board::DefinePotentialMoveset(Piece* p) {
             }
         }
     }
-    else if (type == "knight") {
-        potential_moveset.push_back(Coord(x-2, y-1)); //Left
-        potential_moveset.push_back(Coord(x-2, y+1));
-        potential_moveset.push_back(Coord(x-1, y+2)); //Up
-        potential_moveset.push_back(Coord(x+1, y+2));
-        potential_moveset.push_back(Coord(x+2, y-1)); //Right
-        potential_moveset.push_back(Coord(x+2, y+1));
-        potential_moveset.push_back(Coord(x-1, y-2)); //Down
-        potential_moveset.push_back(Coord(x+1, y-2));
+
+    //KNIGHTS
+    else*/ if (type == "knight") {
+
+        AddMove(cur, Coord(x-2, y-1), potential_moveset); //Left
+        AddMove(cur, Coord(x-2, y+1), potential_moveset);
+        AddMove(cur, Coord(x-1, y+2), potential_moveset); //Up
+        AddMove(cur, Coord(x+1, y+2), potential_moveset);
+        AddMove(cur, Coord(x+2, y-1), potential_moveset); //Right
+        AddMove(cur, Coord(x+2, y+1), potential_moveset);
+        AddMove(cur, Coord(x-1, y-2), potential_moveset); //Down
+        AddMove(cur, Coord(x+1, y-2), potential_moveset);
     }
-    else if (type == "queen") {
+
+    /*else if (type == "queen") {
         for (int i = x - numCols; i < x + numCols; i++) { //Horizontal
             potential_moveset.push_back(Coord(i, y));
         }
@@ -346,7 +357,7 @@ void Board::DefinePotentialMoveset(Piece* p) {
         potential_moveset.push_back(Coord(x-1, y+1)); //Backward
         potential_moveset.push_back(Coord(x+1, y+1));
         potential_moveset.push_back(Coord(x, y+1));
-    }
+    }*/
 
     p->SetPotentialMoveset(potential_moveset);
 }
