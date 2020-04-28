@@ -24,6 +24,11 @@ class Coord {
         friend bool operator==(Coord& first, Coord& second) {
             return (first.X() == second.X() && first.Y() == second.Y());
         }
+
+        //Compare Coords
+        friend bool operator!=(Coord& first, Coord& second) {
+            return (first.X() != second.X() || first.Y() != second.Y());
+        }
 };
 
 #endif // COORD_H
