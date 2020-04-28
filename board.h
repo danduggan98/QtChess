@@ -26,14 +26,14 @@ class Board : public QObject
 
         explicit Board(QGraphicsView *view, QObject *parent = nullptr);
         Square* GetSquareAt(Coord c) { return board_[c.X()][c.Y()]; };
-        void AddPiece(Piece *piece);
+        void AddPiece(Piece *piece) { GetSquareAt(piece->get_coords())->SetPiece(piece); }
         void MovePiece(Coord from, Coord to);
         void Reset();
 
         void DefineMoveset(Piece* p);
         void DefinePotentialMoveset(Piece* p);
-        void AddMove(Coord startPos, Coord newPos, std::vector<Coord> &temp_moveset);
-        void AddMovespace();
+        void AddMove(Coord startPos, Coord endPos, std::vector<Coord> &temp_moveset);
+        void AddMovespace(Coord startPos, Coord endPos, std::vector<Coord> &temp_moveset);
         void UpdateMovesets();
 
         bool ContainsPiece(Coord c) { return !GetSquareAt(c)->isEmpty(); };
