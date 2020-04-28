@@ -20,15 +20,10 @@ void Piece::ChangePos(Coord m) {
 
 //See if a given coordinate is in our moveset, indicating it can be played
 bool Piece::IsValidMove(Coord m) {
-
-    //Check that the move is a real square
-    if (m.isOnBoard()) {
-
-        //Look for the move in our moveset
-        for (unsigned int i = 0; i < real_moveset_.size(); i++) {
-            if (real_moveset_[i] == m) {
-                return true;
-            }
+    //Look for the move in our moveset
+    for (unsigned int i = 0; i < real_moveset_.size(); i++) {
+        if (real_moveset_[i] == m) {
+            return true;
         }
     }
     return false;
