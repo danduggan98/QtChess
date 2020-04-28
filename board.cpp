@@ -154,17 +154,19 @@ void Board::DefinePotentialMoveset(Piece* p) {
     //Add the possible moveset for each piece
     //INCOMPLETE
     //DOES NOT TAKE INTO ACCOUNT MOVES THAT ARE "BLOCKED" BY OTHER PIECES, ALLY OR ENEMY
+    // FIX - MERGE MOVESET DEF FUNCTIONS TOGETHER - START CHECKIGN IN EACH DIRECITON AND STOP WHEN YOU HIT ANOTHER PIECE
+    // IF THAT'S AN ENEMY, INCLUDE IT IN THE MOVESET, ELSE JUST STOP
     if (type == "pawn") {
 
         //One square forward
         Coord oneFwd(x, y - dir);
-        if (oneFwd.isOnBoard() && !ContainsEnemy(cur, oneFwd)) {
+        if (oneFwd.isOnBoard() && !ContainsPiece(oneFwd)) {
             potential_moveset.push_back(oneFwd);
         }
 
         //Two squares forward - only on first turn
         Coord twoFwd(x, y - (2*dir));
-        if (twoFwd.isOnBoard() && times_moved == 0 && !ContainsEnemy(cur, twoFwd)) {
+        if (twoFwd.isOnBoard() && times_moved == 0 && !ContainsPiece(oneFwd) && !ContainsPiece(twoFwd) ) {
             potential_moveset.push_back(twoFwd);
         }
 
