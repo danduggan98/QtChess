@@ -114,26 +114,6 @@ void Board::Reset() {
     UpdateMovesets();
 }
 
-//Determine the valid moves for a piece, and pass them to the piece itself
-void Board::DefineMoveset(Piece* p) {
-    std::vector<Coord> new_moveset;
-
-    std::vector<Coord> potential_moveset = p->get_potential_moves();
-    Coord p_coords = p->get_coords();
-
-    //Iterate through the theoretical moves and see which are possible in this position
-    for (unsigned int i = 0; i < potential_moveset.size(); i++) {
-        Coord potential_move = potential_moveset[i];
-
-        if (potential_move.isOnBoard()) {
-            if (!ContainsAlly(p_coords, potential_move)) {
-                new_moveset.push_back(potential_move);
-            }
-        }
-    }
-    p->SetMoveset(new_moveset);
-}
-
 //Check if a single move is valid, add it if so (Used only by knight)
 void Board::AddMove(Coord startPos, Coord endPos, std::vector<Coord> &temp_moveset) {
     if (endPos.isOnBoard() && !ContainsAlly(startPos, endPos)) {
@@ -159,14 +139,19 @@ void Board::AddMovespace(Coord startPos, Coord endPos, std::vector<Coord> &temp_
     while (x != endX + xAdjust || y != endY + yAdjust) {
         Coord newPos(x, y);
 
-        if (newPos.isOnBoard() && newPos != startPos) {          //Don't add the current square or any invalid coordinates
-            if (GetSquareAt(newPos)->isEmpty()) {                //Empty square - add it
-                temp_moveset.push_back(newPos);
+        if (newPos != startPos) {                      //Don't add the current square
+            if (newPos.isOnBoard()) {                  //Don't add any invalid coordinates
+                if (GetSquareAt(newPos)->isEmpty()) {  //Empty square - add it
+                    temp_moveset.push_back(newPos);
+                }
+                else {
+                    if (ContainsAlly(startPos, newPos)) { break; }  // Ally in the way - block everything including and beyond it
+                    temp_moveset.push_back(newPos);
+                    if (ContainsEnemy(startPos, newPos)) { break; } // Enemy in the way - add the enemy (previous line) but block everything beyond it
+                }
             }
             else {
-                if (ContainsAlly(startPos, newPos)) { break; }   // Ally in the way - block everything including and beyond it
-                temp_moveset.push_back(newPos);
-                if (ContainsEnemy(startPos, newPos)) { break; }  // Enemy in the way - add the enemy (previous line) but block everything beyond it
+                break;
             }
         }
         x += xAdjust;
@@ -175,8 +160,8 @@ void Board::AddMovespace(Coord startPos, Coord endPos, std::vector<Coord> &temp_
 }
 
 //Determine the potential moves for a piece and pass them to the piece itself
-void Board::DefinePotentialMoveset(Piece* p) {
-    std::vector<Coord> potential_moveset;
+void Board::DefineMoveset(Piece* p) {
+    std::vector<Coord> new_moveset;
 
     int x = p->get_x();
     int y = p->get_y();
@@ -184,197 +169,89 @@ void Board::DefinePotentialMoveset(Piece* p) {
     int times_moved = p->get_times_moved();
     QString type = p->get_type();
 
-    //Add the possible moveset for each piece
-    //INCOMPLETE
-    //DOES NOT TAKE INTO ACCOUNT MOVES THAT ARE "BLOCKED" BY OTHER PIECES, ALLY OR ENEMY
-    // FIX - MERGE MOVESET DEF FUNCTIONS TOGETHER - START CHECKIGN IN EACH DIRECITON AND STOP WHEN YOU HIT ANOTHER PIECE
-    // IF THAT'S AN ENEMY, INCLUDE IT IN THE MOVESET, ELSE JUST STOP
-
     //PAWNS
     if (type == "pawn") {
-
         int dir = (p->get_color() == 'w') ? 1 : -1; //Sign indicates direction of pawn moves - positive (up) for white and negative (down) for black
 
         //One square forward
         Coord oneFwd(x, y - dir);
         if (oneFwd.isOnBoard() && !ContainsPiece(oneFwd)) {
-            potential_moveset.push_back(oneFwd);
+            new_moveset.push_back(oneFwd);
         }
 
         //Two squares forward - only on first turn
         Coord twoFwd(x, y - (2*dir));
         if (twoFwd.isOnBoard() && times_moved == 0 && !ContainsPiece(oneFwd) && !ContainsPiece(twoFwd) ) {
-            potential_moveset.push_back(twoFwd);
+            new_moveset.push_back(twoFwd);
         }
 
         //Capture an enemy to the left
         Coord leftCapture(x - dir, y - dir);
         if (leftCapture.isOnBoard() && ContainsEnemy(cur, leftCapture)) {
-            potential_moveset.push_back(leftCapture);
+            new_moveset.push_back(leftCapture);
         }
 
         //Capture an enemy to the right
         Coord rightCapture(x + dir, y - dir);
         if (rightCapture.isOnBoard() && ContainsEnemy(cur, rightCapture)) {
-            potential_moveset.push_back(rightCapture);
+            new_moveset.push_back(rightCapture);
         }
     }
 
     //ROOKS
     else if (type == "rook") {
-
-        //Left horizontal
-        AddMovespace(cur, Coord(0, y), potential_moveset);
-
-        //Right horizontal
-        for (int i = x + 1; i < Board::numCols; i++) {
-            Coord newPos(i, y);
-            if (newPos.isOnBoard()) {
-                if (GetSquareAt(newPos)->isEmpty()) {
-                    potential_moveset.push_back(newPos);
-                }
-                else {
-                    if (ContainsAlly(cur, newPos)) { break; }
-                    potential_moveset.push_back(newPos);
-                    if (ContainsEnemy(cur, newPos)) { break; }
-                }
-            }
-        }
-
-        //Upper vertical
-        for (int i = y - 1; i >= 0; i--) {
-            Coord newPos(x, i);
-            if (newPos.isOnBoard()) {
-                if (GetSquareAt(newPos)->isEmpty()) {
-                    potential_moveset.push_back(newPos);
-                }
-                else {
-                    if (ContainsAlly(cur, newPos)) { break; }
-                    potential_moveset.push_back(newPos);
-                    if (ContainsEnemy(cur, newPos)) { break; }
-                }
-            }
-        }
-
-        //Lower vertical
-        for (int i = y + 1; i < Board::numRows; i++) {
-            Coord newPos(x, i);
-            if (newPos.isOnBoard()) {
-                if (GetSquareAt(newPos)->isEmpty()) {
-                    potential_moveset.push_back(newPos);
-                }
-                else {
-                    if (ContainsAlly(cur, newPos)) { break; }
-                    potential_moveset.push_back(newPos);
-                    if (ContainsEnemy(cur, newPos)) { break; }
-                }
-            }
-        }
+        AddMovespace(cur, Coord(0, y), new_moveset);              //Left horizontal
+        AddMovespace(cur, Coord(Board::numCols, y), new_moveset); //Right horizontal
+        AddMovespace(cur, Coord(x, 0), new_moveset);              //Upper vertical
+        AddMovespace(cur, Coord(x, Board::numRows), new_moveset); //Lower vertical
     }
 
     //BISHOPS
     else if (type == "bishop") {
-
-        //Upper left diagonal
-        for (int i = x - 1, j = y - 1; i >= 0; i--, j--) {
-            Coord newPos(i, j);
-            if (newPos.isOnBoard()) {
-                if (GetSquareAt(newPos)->isEmpty()) {
-                    potential_moveset.push_back(newPos);
-                }
-                else {
-                    if (ContainsAlly(cur, newPos)) { break; }
-                    potential_moveset.push_back(newPos);
-                    if (ContainsEnemy(cur, newPos)) { break; }
-                }
-            }
-        }
-
-        //Upper right diagonal
-        for (int i = x + 1, j = y - 1; i < Board::numCols; i++, j--) {
-            Coord newPos(i, j);
-            if (newPos.isOnBoard()) {
-                if (GetSquareAt(newPos)->isEmpty()) {
-                    potential_moveset.push_back(newPos);
-                }
-                else {
-                    if (ContainsAlly(cur, newPos)) { break; }
-                    potential_moveset.push_back(newPos);
-                    if (ContainsEnemy(cur, newPos)) { break; }
-                }
-            }
-        }
-
-        //Lower left diagonal
-        for (int i = x - 1, j = y + 1; i >= 0; i--, j++) {
-            Coord newPos(i, j);
-            if (newPos.isOnBoard()) {
-                if (GetSquareAt(newPos)->isEmpty()) {
-                    potential_moveset.push_back(newPos);
-                }
-                else {
-                    if (ContainsAlly(cur, newPos)) { break; }
-                    potential_moveset.push_back(newPos);
-                    if (ContainsEnemy(cur, newPos)) { break; }
-                }
-            }
-        }
-
-        //Lower right diagonal
-        for (int i = x + 1, j = y + 1; i < Board::numCols; i++, j++) {
-            Coord newPos(i, j);
-            if (newPos.isOnBoard()) {
-                if (GetSquareAt(newPos)->isEmpty()) {
-                    potential_moveset.push_back(newPos);
-                }
-                else {
-                    if (ContainsAlly(cur, newPos)) { break; }
-                    potential_moveset.push_back(newPos);
-                    if (ContainsEnemy(cur, newPos)) { break; }
-                }
-            }
-        }
+        AddMovespace(cur, Coord(0, 0), new_moveset);                           //Upper left diagonal
+        AddMovespace(cur, Coord(Board::numCols, 0), new_moveset);              //Upper right diagonal
+        AddMovespace(cur, Coord(0, Board::numRows), new_moveset);              //Lower left diagonal
+        AddMovespace(cur, Coord(Board::numCols, Board::numRows), new_moveset); //Lower right diagonal
     }
 
     //KNIGHTS
     else if (type == "knight") {
-
-        AddMove(cur, Coord(x - 2, y - 1), potential_moveset); //Left
-        AddMove(cur, Coord(x - 2, y + 1), potential_moveset);
-        AddMove(cur, Coord(x - 1, y + 2), potential_moveset); //Up
-        AddMove(cur, Coord(x + 1, y + 2), potential_moveset);
-        AddMove(cur, Coord(x + 2, y - 1), potential_moveset); //Right
-        AddMove(cur, Coord(x + 2, y + 1), potential_moveset);
-        AddMove(cur, Coord(x - 1, y - 2), potential_moveset); //Down
-        AddMove(cur, Coord(x + 1, y - 2), potential_moveset);
+        AddMove(cur, Coord(x - 2, y - 1), new_moveset); //Left
+        AddMove(cur, Coord(x - 2, y + 1), new_moveset);
+        AddMove(cur, Coord(x - 1, y + 2), new_moveset); //Up
+        AddMove(cur, Coord(x + 1, y + 2), new_moveset);
+        AddMove(cur, Coord(x + 2, y - 1), new_moveset); //Right
+        AddMove(cur, Coord(x + 2, y + 1), new_moveset);
+        AddMove(cur, Coord(x - 1, y - 2), new_moveset); //Down
+        AddMove(cur, Coord(x + 1, y - 2), new_moveset);
     }
 
-    /*else if (type == "queen") {
-        for (int i = x - numCols; i < x + numCols; i++) { //Horizontal
-            potential_moveset.push_back(Coord(i, y));
-        }
-        for (int i = y - numRows; i < y + numRows; i++) { //Vertical
-            potential_moveset.push_back(Coord(x, i));
-        }
-        for (int i = x - numCols, j = y - numRows; i < x + numCols; i++, j++) { //Diagonal from top left to bottom right
-            potential_moveset.push_back(Coord(i, j));
-        }
-        for (int i = x - numCols, j = y + numRows; i < x + numCols; i++, j--) { //Diagonal from bottom left to top right
-            potential_moveset.push_back(Coord(i, j));
-        }
+    //QUEENS
+    else if (type == "queen") {
+        AddMovespace(cur, Coord(0, y), new_moveset);                           //Left horizontal
+        AddMovespace(cur, Coord(Board::numCols, y), new_moveset);              //Right horizontal
+        AddMovespace(cur, Coord(x, 0), new_moveset);                           //Upper vertical
+        AddMovespace(cur, Coord(x, Board::numRows), new_moveset);              //Lower vertical
+
+        AddMovespace(cur, Coord(0, 0), new_moveset);                           //Upper left diagonal
+        AddMovespace(cur, Coord(Board::numCols, 0), new_moveset);              //Upper right diagonal
+        AddMovespace(cur, Coord(0, Board::numRows), new_moveset);              //Lower left diagonal
+        AddMovespace(cur, Coord(Board::numCols, Board::numRows), new_moveset); //Lower right diagonal
     }
+
+    //KINGS
     else if (type == "king") {
-        potential_moveset.push_back(Coord(x-1, y)); //Sides
-        potential_moveset.push_back(Coord(x+1, y));
-        potential_moveset.push_back(Coord(x-1, y-1)); //Forward
-        potential_moveset.push_back(Coord(x+1, y-1));
-        potential_moveset.push_back(Coord(x, y-1));
-        potential_moveset.push_back(Coord(x-1, y+1)); //Backward
-        potential_moveset.push_back(Coord(x+1, y+1));
-        potential_moveset.push_back(Coord(x, y+1));
-    }*/
+        AddMove(cur, Coord(x - 1, y), new_moveset);     //Sides
+        AddMove(cur, Coord(x + 1, y), new_moveset);
+        AddMove(cur, Coord(x - 1, y - 1), new_moveset); //Forward
+        AddMove(cur, Coord(x + 1, y - 1), new_moveset);
+        AddMove(cur, Coord(x, y - 1), new_moveset);
+        AddMove(cur, Coord(x - 1, y + 1), new_moveset); //Backward
+        AddMove(cur, Coord(x + 1, y + 1), new_moveset);
+        AddMove(cur, Coord(x, y + 1), new_moveset);
+    }
 
-    p->SetPotentialMoveset(potential_moveset);
+    p->SetMoveset(new_moveset);
 }
 
 //Define new movesets for every piece
@@ -385,7 +262,6 @@ void Board::UpdateMovesets() {
             Piece* curPiece = GetSquareAt(pos)->get_piece();
 
             if (curPiece) {
-                DefinePotentialMoveset(curPiece);
                 DefineMoveset(curPiece);
             }
         }
