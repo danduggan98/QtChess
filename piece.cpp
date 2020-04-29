@@ -6,8 +6,7 @@ Piece::Piece(int x, int y, QString type, char color, QObject *parent) : QObject(
     y_pos_ = y;
     type_ = type;
     color_ = color;
-    real_moveset_ = {};
-    potential_moveset_ = {};
+    moveset_ = {};
     times_moved_ = 0;
 }
 
@@ -21,8 +20,8 @@ void Piece::ChangePos(Coord m) {
 //See if a given coordinate is in our moveset, indicating it can be played
 bool Piece::IsValidMove(Coord m) {
     //Look for the move in our moveset
-    for (unsigned int i = 0; i < real_moveset_.size(); i++) {
-        if (real_moveset_[i] == m) {
+    for (unsigned int i = 0; i < moveset_.size(); i++) {
+        if (moveset_[i] == m) {
             return true;
         }
     }

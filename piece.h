@@ -16,8 +16,7 @@ class Piece : public QObject {
         int y_pos_;
         QString type_;
         char color_;
-        std::vector<Coord> real_moveset_;
-        std::vector<Coord> potential_moveset_;
+        std::vector<Coord> moveset_;
         int times_moved_;
 
     public:
@@ -28,11 +27,9 @@ class Piece : public QObject {
         QString get_type() { return type_; };
         char get_color() { return color_; };
         int get_times_moved() { return times_moved_; };
-        std::vector<Coord> get_potential_moves() { return potential_moveset_; };
 
         void ChangePos(Coord m);
-        void SetMoveset(std::vector<Coord> new_moveset) { real_moveset_ = new_moveset; };
-        void SetPotentialMoveset(std::vector<Coord> new_moveset) { potential_moveset_ = new_moveset; };
+        void SetMoveset(std::vector<Coord> new_moveset) { moveset_ = new_moveset; };
         bool IsValidMove(Coord m);
 };
 

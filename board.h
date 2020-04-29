@@ -31,7 +31,6 @@ class Board : public QObject
         void Reset();
 
         void DefineMoveset(Piece* p);
-        void DefinePotentialMoveset(Piece* p);
         void AddMove(Coord startPos, Coord endPos, std::vector<Coord> &temp_moveset);
         void AddMovespace(Coord startPos, Coord endPos, std::vector<Coord> &temp_moveset);
         void UpdateMovesets();
