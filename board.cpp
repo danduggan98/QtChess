@@ -58,11 +58,11 @@ void Board::MovePiece(Coord from, Coord to) {
             if (fromSquare->get_piece()->IsValidMove(to)) {
 
                 //Add the piece to the new square and remove it from the old one
-                toSquare->SetPiece(fromSquare->get_piece());
                 fromSquare->get_piece()->ChangePos(to);
+                toSquare->SetPiece(fromSquare->get_piece());
                 fromSquare->RemovePiece();
 
-                //Update the real and potential moves for each piece now that positions have changed
+                //Update the moves for each piece now that positions have changed
                 UpdateMovesets();
             }
         }
@@ -159,7 +159,7 @@ void Board::AddMovespace(Coord startPos, Coord endPos, std::vector<Coord> &temp_
     }
 }
 
-//Determine the potential moves for a piece and pass them to the piece itself
+//Determine the valid moves for a piece and pass them to the piece itself
 void Board::DefineMoveset(Piece* p) {
     std::vector<Coord> new_moveset;
 
@@ -251,7 +251,7 @@ void Board::DefineMoveset(Piece* p) {
         AddMove(cur, Coord(x, y + 1), new_moveset);
     }
 
-    p->SetMoveset(new_moveset);
+    p->SetMoveset(new_moveset); //Store the updated moveset in the piece
 }
 
 //Define new movesets for every piece
