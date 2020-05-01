@@ -4,6 +4,8 @@
 #include <QDebug>
 
 Square* Board::board_[Board::numRows][Board::numCols] = {};
+Coord Board::wKingPos(4,7);
+Coord Board::bKingPos(4,0);
 
 //Constructor
 Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
@@ -55,12 +57,19 @@ void Board::MovePiece(Coord from, Coord to) {
         if(fromSquare != toSquare) {
 
             //Check that the move is valid
-            if (fromSquare->get_piece()->IsValidMove(to)) {
+            Piece* movingPiece = fromSquare->get_piece();
+            if (movingPiece->IsValidMove(to)) {
 
                 //Add the piece to the new square and remove it from the old one
-                fromSquare->get_piece()->ChangePos(to);
-                toSquare->SetPiece(fromSquare->get_piece());
+                movingPiece->ChangePos(to);
+                toSquare->SetPiece(movingPiece);
                 fromSquare->RemovePiece();
+
+                //If a king is moved, update its position
+                if (ContainsKing(to)) {
+                    qDebug() << "MOVED THE KING";
+                    movingPiece->get_color() == 'w' ? wKingPos = to : bKingPos = to;
+                }
 
                 //Update the moves for each piece now that positions have changed
                 UpdateMovesets();
@@ -117,6 +126,9 @@ void Board::Reset() {
 //Check if a single move is valid, add it if so (Used only by knight)
 void Board::AddMove(Coord startPos, Coord endPos, std::vector<Coord> &temp_moveset) {
     if (endPos.isOnBoard() && !ContainsAlly(startPos, endPos)) {
+        if (ContainsKing(endPos)) {
+            qDebug() << "KING IS IN CHECK!!!!!";
+        }
         temp_moveset.push_back(endPos);
     }
 }
@@ -294,6 +306,16 @@ bool Board::ContainsEnemy(Coord c1, Coord c2) {
         if (p1->get_color() != p2->get_color()) {
             return true;
         }
+    }
+    return false;
+}
+
+//Check if the coordinate contains a king
+bool Board::ContainsKing(Coord c) {
+    Piece* p = GetSquareAt(c)->get_piece();
+
+    if (p) {
+        return (p->get_type() == "king");
     }
     return false;
 }

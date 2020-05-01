@@ -22,6 +22,9 @@ class Board : public QObject
         static const int numRows = 8;
         static const int numCols = 8;
 
+        static Coord wKingPos;
+        static Coord bKingPos;
+
         static Square* board_[numRows][numCols];
 
         explicit Board(QGraphicsView *view, QObject *parent = nullptr);
@@ -38,6 +41,7 @@ class Board : public QObject
         bool ContainsPiece(Coord c) { return !GetSquareAt(c)->isEmpty(); };
         bool ContainsAlly(Coord c1, Coord c2);
         bool ContainsEnemy(Coord c1, Coord c2);
+        bool ContainsKing(Coord c);
 };
 
 #endif // BOARD_H
