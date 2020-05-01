@@ -7,6 +7,8 @@ Square* Board::board_[Board::numRows][Board::numCols] = {};
 Coord Board::wKingPos(4,7);
 Coord Board::bKingPos(4,0);
 std::vector<Piece*> Board::pieces = {};
+std::vector<Piece*> Board::wCapturedPieces = {};
+std::vector<Piece*> Board::bCapturedPieces = {};
 
 //Constructor
 Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
@@ -67,6 +69,12 @@ void Board::MovePiece(Coord from, Coord to) {
             Piece* movingPiece = fromSquare->get_piece();
             if (movingPiece->IsValidMove(to)) {
 
+                //If there is an enemy piece on this square, capture it
+                Piece* destinationPiece = toSquare->get_piece();
+                if (destinationPiece) {
+                    CapturePiece(destinationPiece);
+                }
+
                 //Add the piece to the new square and remove it from the old one
                 movingPiece->ChangePos(to);
                 toSquare->SetPiece(movingPiece);
@@ -89,6 +97,8 @@ void Board::MovePiece(Coord from, Coord to) {
     else {
         qDebug() << "Square is empty. No piece to move.";
     }
+
+    //Clean up pointers
 }
 
 //Move the pieces to their starting positions
@@ -284,6 +294,23 @@ void Board::UpdateMovesets() {
     for (unsigned int i = 0; i < pieces.size(); i++) {
         DefineMoveset(pieces[i]);
     }
+}
+
+void Board::CapturePiece(Piece* p) {
+
+    //Add the pieces to its opponent's list of captured pieces
+    if (p->get_color() == 'w') {
+        bCapturedPieces.push_back(p);
+        qDebug() << "Captured a white piece";
+    }
+    else {
+        wCapturedPieces.push_back(p);
+        qDebug() << "Captured a black piece";
+    }
+
+    //Remove it from the main board
+    std::vector<Piece*>::iterator capturedPiece = std::find(pieces.begin(), pieces.end(), p); //Find it in the pieces vector
+    pieces.erase(capturedPiece);
 }
 
 //See if a coordinate contains a piece of the same color
