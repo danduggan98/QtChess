@@ -27,6 +27,7 @@ class Piece : public QObject {
         QString get_type() { return type_; };
         char get_color() { return color_; };
         int get_times_moved() { return times_moved_; };
+        std::vector<Coord> get_moves() { return moveset_; };
 
         void ChangePos(Coord m);
         void SetMoveset(std::vector<Coord> new_moveset) { moveset_ = new_moveset; };

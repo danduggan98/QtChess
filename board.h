@@ -46,6 +46,7 @@ class Board : public QObject
         bool ContainsAlly(Coord c1, Coord c2);
         bool ContainsEnemy(Coord c1, Coord c2);
         bool ContainsKing(Coord c);
+        bool KingInCheck(char color);
 };
 
 #endif // BOARD_H

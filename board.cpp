@@ -3,6 +3,7 @@
 #include <QGraphicsScene>
 #include <QDebug>
 
+//Initialize non-const static members
 Square* Board::board_[Board::numRows][Board::numCols] = {};
 Coord Board::wKingPos(4,7);
 Coord Board::bKingPos(4,0);
@@ -88,6 +89,15 @@ void Board::MovePiece(Coord from, Coord to) {
 
                 //Update the moves for each piece now that positions have changed
                 UpdateMovesets();
+
+                if (KingInCheck(movingPiece->get_color())) {
+                    qDebug() << "MOVE PUT OWN KING IN CHECK!!!!!!!!!!!!!";
+                }
+                if (KingInCheck(movingPiece->get_color() == 'w' ? 'b' : 'w')) {
+                    qDebug() << "MOVE PUT ENEMY KING IN CHECK!!!!!!!!!!!!!";
+                }
+
+                //IF THE MOVE RESULTED IN CHECK, REVERT IT AND THEY GO AGAIN (??? MAYBE)
             }
         }
         else {
@@ -97,8 +107,6 @@ void Board::MovePiece(Coord from, Coord to) {
     else {
         qDebug() << "Square is empty. No piece to move.";
     }
-
-    //Clean up pointers
 }
 
 //Move the pieces to their starting positions
@@ -149,9 +157,6 @@ void Board::Reset() {
 //Check if a single move is valid, add it if so (Used only by knight)
 void Board::AddMove(Coord startPos, Coord endPos, std::vector<Coord> &temp_moveset) {
     if (endPos.isOnBoard() && !ContainsAlly(startPos, endPos)) {
-        if (ContainsKing(endPos)) {
-            qDebug() << "KING IS IN CHECK!!!!!";
-        }
         temp_moveset.push_back(endPos);
     }
 }
@@ -349,6 +354,23 @@ bool Board::ContainsKing(Coord c) {
 
     if (p) {
         return (p->get_type() == "king");
+    }
+    return false;
+}
+
+//See if the king with a given color is in check
+bool Board::KingInCheck(char color) {
+
+    //Go through all moves for all pieces
+    for (unsigned int i = 0; i < pieces.size(); i++) {
+        std::vector <Coord> moves = pieces[i]->get_moves();
+
+        //Check that the coordinate contains a king and that it has the given color
+        for (unsigned int j = 0; j < moves.size(); j++) {
+            if (ContainsKing(moves[j]) && GetSquareAt(moves[j])->get_piece()->get_color() == color) {
+                return true;
+            }
+        }
     }
     return false;
 }
