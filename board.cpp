@@ -6,6 +6,7 @@
 Square* Board::board_[Board::numRows][Board::numCols] = {};
 Coord Board::wKingPos(4,7);
 Coord Board::bKingPos(4,0);
+std::vector<Piece*> Board::pieces = {};
 
 //Constructor
 Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
@@ -43,6 +44,12 @@ Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
 
     //Place the pieces in their default state
     Reset();
+}
+
+//Add a piece to the board and the piece vector
+void Board::AddPiece(Piece *piece) {
+    GetSquareAt(piece->get_coords())->SetPiece(piece);
+    pieces.push_back(piece);
 }
 
 //Move a piece from one coordinate to another
@@ -86,6 +93,12 @@ void Board::MovePiece(Coord from, Coord to) {
 
 //Move the pieces to their starting positions
 void Board::Reset() {
+
+    //Remove and delete any pieces already in the vector to avoid leaking memory
+    for (auto p : pieces) {
+        delete p;
+    }
+    pieces.clear();
 
     //Pawns
     for (int i = 0; i < Board::numCols; i++) {
@@ -268,15 +281,8 @@ void Board::DefineMoveset(Piece* p) {
 
 //Define new movesets for every piece
 void Board::UpdateMovesets() {
-    for (int i = 0; i < numRows; i++) {
-        for (int j = 0; j < numCols; j++) {
-            Coord pos(i,j);
-            Piece* curPiece = GetSquareAt(pos)->get_piece();
-
-            if (curPiece) {
-                DefineMoveset(curPiece);
-            }
-        }
+    for (unsigned int i = 0; i < pieces.size(); i++) {
+        DefineMoveset(pieces[i]);
     }
 }
 

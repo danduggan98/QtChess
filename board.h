@@ -26,10 +26,11 @@ class Board : public QObject
         static Coord bKingPos;
 
         static Square* board_[numRows][numCols];
+        static std::vector<Piece*> pieces;
 
         explicit Board(QGraphicsView *view, QObject *parent = nullptr);
         Square* GetSquareAt(Coord c) { return board_[c.X()][c.Y()]; };
-        void AddPiece(Piece *piece) { GetSquareAt(piece->get_coords())->SetPiece(piece); }
+        void AddPiece(Piece *piece);
         void MovePiece(Coord from, Coord to);
         void Reset();
 
