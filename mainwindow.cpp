@@ -49,6 +49,7 @@ void MainWindow::HighlightMoves(Square *s) {
 
 //Remove previous selections
 void MainWindow::RemoveSelections() {
+
     for (int i = 0; i < Board::numRows; i++) {
         for (int j = 0; j < Board::numCols; j++) {
             board_ptr->GetSquareAt(Coord(i, j))->Deselect();
@@ -59,9 +60,11 @@ void MainWindow::RemoveSelections() {
 //Select a piece when it's clicked
 void MainWindow::SquareSelectedSlot(Square *s) {
 
-    //Select the square
+    //Select the square if it contains a piece
     RemoveSelections();
-    SelectSquare(s);
+    if (s->get_piece()) {
+        SelectSquare(s);
+    }
 
     qDebug() << "Selected square (" << s->get_x() << ", " << s->get_y() << ")";
     if (!s->isEmpty()) {
