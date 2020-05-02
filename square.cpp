@@ -53,12 +53,24 @@ void Square::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     painter->drawRect(QRect(this->x_val_ * this->width_, this->y_val_ * this->height_, this->width_, this->height_));
     painter->setBrush(b);
 
-    //Color the square blue if the piece contains a viable move
+    //Highlight the square if it contains a valid move for the current piece
     if (isHighlighted) {
-        painter->setBrush(QBrush(QColor(0,0,255)));
-        painter->setOpacity(0.25);
-        painter->drawRect(QRect(this->x_val_ * this->width_, this->y_val_ * this->height_, this->width_, this->height_));
-        painter->setBrush(b);
+
+        //Small blue dot if empty
+        if (isEmpty()) {
+            painter->setBrush(QBrush(QColor(0,0,255)));
+            painter->setOpacity(0.35);
+            painter->drawEllipse(QPoint(int((this->x_val_ * this->width_)+this->width_/2), int((this->y_val_ * this->height_)+this->height_/2)), int(this->width_/7), int(this->height_/7));
+            painter->setBrush(b);
+        }
+
+        //Large blue square if occupied
+        else {
+            painter->setBrush(QBrush(QColor(0,0,255)));
+            painter->setOpacity(0.25);
+            painter->drawRect(QRect(this->x_val_ * this->width_, this->y_val_ * this->height_, this->width_, this->height_));
+            painter->setBrush(b);
+        }
     }
 
     //Color the square green if it's selected
