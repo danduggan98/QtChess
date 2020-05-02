@@ -22,9 +22,6 @@ class Board : public QObject
         static const int numRows = 8;
         static const int numCols = 8;
 
-        static Coord wKingPos;
-        static Coord bKingPos;
-
         static Square* board_[numRows][numCols];
         static std::vector<Piece*> pieces;
         static std::vector<Piece*> wCapturedPieces;
@@ -47,7 +44,7 @@ class Board : public QObject
         bool ContainsEnemy(Coord c1, Coord c2);
         bool ContainsKing(Coord c);
         bool KingInCheck(char color);
-        bool Checkmate();
+        bool KingInCheckmate(char color);
 };
 
 #endif // BOARD_H
