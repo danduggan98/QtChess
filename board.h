@@ -47,6 +47,7 @@ class Board : public QObject
         bool ContainsEnemy(Coord c1, Coord c2);
         bool ContainsKing(Coord c);
         bool KingInCheck(char color);
+        bool Checkmate();
 };
 
 #endif // BOARD_H

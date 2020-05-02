@@ -28,7 +28,9 @@ MainWindow::MainWindow(QWidget *parent)
     }
 }
 
+//Select a piece when it's clicked
 void MainWindow::SquareSelectedSlot(Square *s) {
+
     qDebug() << "Selected square (" << s->get_x() << ", " << s->get_y() << ")";
     if (!s->isEmpty()) {
         qDebug() << "Square contains a " << s->get_piece()->get_color() << s->get_piece()->get_type();
@@ -40,8 +42,6 @@ void MainWindow::SquareSelectedSlot(Square *s) {
     if (lastSelectedSquare) {
         Coord from = lastSelectedSquare->get_coords();
         Coord to = s->get_coords();
-
-        qDebug() << "VALID MOVE? -" << lastSelectedSquare->get_piece()->IsValidMove(to); //TESTING
 
         board_ptr->MovePiece(from, to);
         lastSelectedSquare = nullptr; //Reset the pointer so they can make the next move

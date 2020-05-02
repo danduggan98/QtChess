@@ -81,23 +81,40 @@ void Board::MovePiece(Coord from, Coord to) {
                 toSquare->SetPiece(movingPiece);
                 fromSquare->RemovePiece();
 
-                //If a king is moved, update its position
-                if (ContainsKing(to)) {
-                    qDebug() << "MOVED THE KING";
-                    movingPiece->get_color() == 'w' ? wKingPos = to : bKingPos = to;
-                }
-
                 //Update the moves for each piece now that positions have changed
                 UpdateMovesets();
 
+                //Prevent any moves which would leave their own king in check
                 if (KingInCheck(movingPiece->get_color())) {
-                    qDebug() << "MOVE PUT OWN KING IN CHECK!!!!!!!!!!!!!";
-                }
-                if (KingInCheck(movingPiece->get_color() == 'w' ? 'b' : 'w')) {
-                    qDebug() << "MOVE PUT ENEMY KING IN CHECK!!!!!!!!!!!!!";
+                    qDebug() << "Invalid move - would leave" << (movingPiece->get_color() == 'w' ? "white" : "black") << "king in check";
+
+                    //Revert the move
+                    movingPiece->ChangePos(from);
+                    if (destinationPiece) {
+                        toSquare->SetPiece(destinationPiece);
+                    }
+                    else {
+                        toSquare->RemovePiece();
+                    }
+
+                    fromSquare->SetPiece(movingPiece);
+                    UpdateMovesets();
+                    if (Checkmate()) {
+                        qDebug() << (movingPiece->get_color() == 'w' ? "BLACK" : "WHITE") << "KING IS IN CHECKMATE!";
+                    }
                 }
 
-                //IF THE MOVE RESULTED IN CHECK, REVERT IT AND THEY GO AGAIN (??? MAYBE)
+                //If a king is moved, update its position
+                if (ContainsKing(to)) {
+                    movingPiece->get_color() == 'w' ? wKingPos = to : bKingPos = to;
+                }
+
+                //Look for check/checkmate on the enemy side
+                if (KingInCheck(movingPiece->get_color() == 'w' ? 'b' : 'w')) {
+                    qDebug() << "Move put" << (movingPiece->get_color() == 'w' ? "black" : "white") << "king in check";
+                }
+
+
             }
         }
         else {
@@ -368,6 +385,24 @@ bool Board::KingInCheck(char color) {
         //Check that the coordinate contains a king and that it has the given color
         for (unsigned int j = 0; j < moves.size(); j++) {
             if (ContainsKing(moves[j]) && GetSquareAt(moves[j])->get_piece()->get_color() == color) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+//Look for checkmate
+bool Board::Checkmate() {
+
+    //Find the kings, then check if they are out of valid moves
+    for (unsigned int i = 0; i < pieces.size(); i++) {
+        Piece* p = pieces[i];
+
+        qDebug() << p->get_type() << "has" << p->get_moves().size() << "moves";
+
+        if (KingInCheck(p->get_color() == 'w' ? 'b' : 'w')) {
+            if (p->get_type() == "king" && p->get_moves().size() == 0) {
                 return true;
             }
         }
