@@ -14,6 +14,10 @@ class MainWindow : public QMainWindow {
 
     public:
         MainWindow(QWidget *parent = nullptr);
+        void RemoveHighlights();
+        void HighlightMoves(Square *s);
+        void SelectSquare(Square *s) { s->Select(); };
+        void RemoveSelections();
         ~MainWindow();
 
     private:

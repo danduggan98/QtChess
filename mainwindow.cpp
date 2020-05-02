@@ -28,8 +28,40 @@ MainWindow::MainWindow(QWidget *parent)
     }
 }
 
+//Clear the highlights for any previously selected squares
+void MainWindow::RemoveHighlights() {
+
+    for (int i = 0; i < Board::numRows; i++) {
+        for (int j = 0; j < Board::numCols; j++) {
+            board_ptr->GetSquareAt(Coord(i, j))->RemoveHighlight();
+        }
+    }
+}
+
+//Highlight all squares in the piece's moveset
+void MainWindow::HighlightMoves(Square *s) {
+
+    std::vector<Coord> moves = s->get_piece()->get_moves();
+    for (unsigned int k = 0; k < moves.size(); k++) {
+        board_ptr->GetSquareAt(moves[k])->Highlight();
+    }
+}
+
+//Remove previous selections
+void MainWindow::RemoveSelections() {
+    for (int i = 0; i < Board::numRows; i++) {
+        for (int j = 0; j < Board::numCols; j++) {
+            board_ptr->GetSquareAt(Coord(i, j))->Deselect();
+        }
+    }
+}
+
 //Select a piece when it's clicked
 void MainWindow::SquareSelectedSlot(Square *s) {
+
+    //Select the square
+    RemoveSelections();
+    SelectSquare(s);
 
     qDebug() << "Selected square (" << s->get_x() << ", " << s->get_y() << ")";
     if (!s->isEmpty()) {
@@ -38,18 +70,32 @@ void MainWindow::SquareSelectedSlot(Square *s) {
         qDebug() << "Square is empty";
     }
 
-    //If a square was previously selected, move the piece from that square to this one
+    //If a square was previously selected, move the piece from that square to this one if they are not allies
     if (lastSelectedSquare) {
-        Coord from = lastSelectedSquare->get_coords();
-        Coord to = s->get_coords();
+        Piece* prevPiece = lastSelectedSquare->get_piece();
+        Piece* nextPiece = s->get_piece();
 
-        board_ptr->MovePiece(from, to);
-        lastSelectedSquare = nullptr; //Reset the pointer so they can make the next move
+        //If they clicked on two consecutive ally pieces, just select the new one
+        if (nextPiece && (prevPiece->get_color() == nextPiece->get_color())) {
+            lastSelectedSquare = s;
+            RemoveHighlights();
+            HighlightMoves(s);
+        }
+        else {
+            Coord from = lastSelectedSquare->get_coords();
+            Coord to = s->get_coords();
+
+            board_ptr->MovePiece(from, to);
+            lastSelectedSquare = nullptr; //Reset the pointer so they can make the next move
+            RemoveHighlights();
+        }
     }
 
     //No piece previously selected - select this one if it has a piece on it
     else if (s->get_piece()) {
         lastSelectedSquare = s;
+        RemoveHighlights();
+        HighlightMoves(s);
     }
 
     //No piece on this square - nothing selected

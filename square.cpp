@@ -12,6 +12,8 @@ Square::Square(int x, int y, float width, float height,
     empty_ = empty;
     color_ = color;
     piece_ = nullptr;
+    isHighlighted = false;
+    isSelected = false;
 }
 
 void Square::RemovePiece() {
@@ -50,6 +52,22 @@ void Square::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     painter->setBrush(QBrush(color_));
     painter->drawRect(QRect(this->x_val_ * this->width_, this->y_val_ * this->height_, this->width_, this->height_));
     painter->setBrush(b);
+
+    //Color the square blue if the piece contains a viable move
+    if (isHighlighted) {
+        painter->setBrush(QBrush(QColor(0,0,255)));
+        painter->setOpacity(0.25);
+        painter->drawRect(QRect(this->x_val_ * this->width_, this->y_val_ * this->height_, this->width_, this->height_));
+        painter->setBrush(b);
+    }
+
+    //Color the square green if it's selected
+    if (isSelected) {
+        painter->setBrush(QBrush(QColor(0,200,0)));
+        painter->setOpacity(0.25);
+        painter->drawRect(QRect(this->x_val_ * this->width_, this->y_val_ * this->height_, this->width_, this->height_));
+        painter->setBrush(b);
+    }
 
     //Draw the piece icon if there is one
     if (!this->isEmpty()) {
