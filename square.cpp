@@ -60,7 +60,7 @@ void Square::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
         //Construct the image file path
         QString filepath = ":/";
         filepath += QString(piece_->get_color()) + "_";
-        filepath += QString(piece_->get_type()) + ".svg";
+        filepath += QString(piece_->get_type()) + ".png";
 
         //Paint the image as a pixmap
         QPixmap pic(filepath);

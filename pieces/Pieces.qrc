@@ -1,17 +1,17 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-    <file alias='b_bishop.svg'>b_bishop.svg</file>
-    <file alias='b_king.svg'>b_king.svg</file>
-    <file alias='b_knight.svg'>b_knight.svg</file>
-    <file alias='b_pawn.svg'>b_pawn.svg</file>
-    <file alias='b_queen.svg'>b_queen.svg</file>
-    <file alias='b_rook.svg'>b_rook.svg</file>
+    <file alias='b_bishop.png'>b_bishop.png</file>
+    <file alias='b_king.png'>b_king.png</file>
+    <file alias='b_knight.png'>b_knight.png</file>
+    <file alias='b_pawn.png'>b_pawn.png</file>
+    <file alias='b_queen.png'>b_queen.png</file>
+    <file alias='b_rook.png'>b_rook.png</file>
 
-    <file alias='w_bishop.svg'>w_bishop.svg</file>
-    <file alias='w_king.svg'>w_king.svg</file>
-    <file alias='w_knight.svg'>w_knight.svg</file>
-    <file alias='w_pawn.svg'>w_pawn.svg</file>
-    <file alias='w_queen.svg'>w_queen.svg</file>
-    <file alias='w_rook.svg'>w_rook.svg</file>
+    <file alias='w_bishop.png'>w_bishop.png</file>
+    <file alias='w_king.png'>w_king.png</file>
+    <file alias='w_knight.png'>w_knight.png</file>
+    <file alias='w_pawn.png'>w_pawn.png</file>
+    <file alias='w_queen.png'>w_queen.png</file>
+    <file alias='w_rook.png'>w_rook.png</file>
 </qresource>
 </RCC>
