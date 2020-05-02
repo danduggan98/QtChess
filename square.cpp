@@ -58,7 +58,7 @@ void Square::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
         float y = height_ * y_val_ - 1;
 
         //Construct the image file path
-        QString filepath = "/home/dan/Documents/School/Project-Workshop/Homeworks/HW5/FinalProject/FinalProject/pieces/";
+        QString filepath = ":/";
         filepath += QString(piece_->get_color()) + "_";
         filepath += QString(piece_->get_type()) + ".svg";
 
