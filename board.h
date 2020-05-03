@@ -37,6 +37,7 @@ class Board : public QObject
         void AddMove(Coord startPos, Coord endPos, std::vector<Coord> &temp_moveset);
         void AddMovespace(Coord startPos, Coord endPos, std::vector<Coord> &temp_moveset);
         void UpdateMovesets();
+        void CleanMovesets();
         void CapturePiece(Piece* p);
 
         bool ContainsPiece(Coord c) { return !GetSquareAt(c)->isEmpty(); };

@@ -70,37 +70,25 @@ void Board::MovePiece(Coord from, Coord to) {
 
             if (movingPiece->IsValidMove(to)) {
 
-                //Add the piece to the new square and remove it from the old one, then update
+                //Move the piece and update the movesets
                 movingPiece->ChangePos(to);
+                movingPiece->PieceMoved();
                 toSquare->SetPiece(movingPiece);
                 fromSquare->RemovePiece();
                 UpdateMovesets();
-
-                //Prevent any moves which would leave their own king in check
-                if (KingInCheck(movingPiece->get_color())) {
-                    qDebug() << "Invalid move - would leave" << (movingPiece->get_color() == 'w' ? "white" : "black") << "king in check";
-
-                    //Revert the move
-                    movingPiece->ChangePos(from);
-                    if (destinationPiece) {
-                        toSquare->SetPiece(destinationPiece);
-                    }
-                    else {
-                        toSquare->RemovePiece();
-                    }
-                    fromSquare->SetPiece(movingPiece);
-                    UpdateMovesets();
-                }
+                CleanMovesets();
 
                 //If the move was successful, capture any piece on that square
                 if (fromSquare->isEmpty() && destinationPiece) {
                     CapturePiece(destinationPiece);
                 }
 
-                //Look for check/checkmate on the enemy side
+                //Look for check
                 if (KingInCheck(movingPiece->get_color() == 'w' ? 'b' : 'w')) {
                     qDebug() << "Move put" << (movingPiece->get_color() == 'w' ? "black" : "white") << "king in check";
                 }
+
+                //Look for checkmate
                 if (KingInCheckmate(movingPiece->get_color() == 'w' ? 'b' : 'w')) {
                     qDebug() << (movingPiece->get_color() == 'w' ? "BLACK" : "WHITE") << "KING IS IN CHECKMATE!";
                 }
@@ -310,6 +298,64 @@ void Board::UpdateMovesets() {
     }
 }
 
+//Removes all bad/illegal moves from the movesets
+void Board::CleanMovesets() {
+    std::vector<std::vector<int>> bad_moves = {};
+    std::vector<Coord> final_moves = {};
+
+    for (unsigned int i = 0; i < pieces.size(); i++) {
+        Piece *p = pieces[i];
+        bad_moves.push_back(std::vector<int>());
+
+        //Remove any pieces in the moveset which would leave the ally king in check
+        Coord from = p->get_coords();
+        Square* fromSquare = GetSquareAt(from);
+        Piece* movingPiece = fromSquare->get_piece();
+        std::vector<Coord> moves = p->get_moves();
+
+        for (unsigned int j = 0; j < moves.size(); j++) {
+            Coord to = moves[j];
+            Square* toSquare = GetSquareAt(to);
+            Piece* destinationPiece = toSquare->get_piece();
+
+            //Add the piece to the new square and remove it from the old one, then update
+            movingPiece->ChangePos(to);
+            toSquare->SetPiece(movingPiece);
+            fromSquare->RemovePiece();
+            UpdateMovesets();
+
+            //Prevent any moves which would leave their own king in check
+            if (KingInCheck(movingPiece->get_color())) {
+                bad_moves[i].push_back(j); //Add this move to our list of bad moves
+            }
+
+            //Revert the move
+            movingPiece->ChangePos(from);
+            if (destinationPiece) {
+                toSquare->SetPiece(destinationPiece);
+            }
+            else {
+                toSquare->RemovePiece();
+            }
+            fromSquare->SetPiece(movingPiece);
+            UpdateMovesets();
+        }
+    }
+
+    //Remove the bad moves from each piece's moveset
+    for (unsigned int i = 0; i < pieces.size(); i++) {
+        std::vector<Coord> moves = pieces[i]->get_moves();
+        final_moves.clear();
+
+        for (unsigned int j = 0; j < moves.size(); j++) {
+            if(std::find(bad_moves[i].begin(), bad_moves[i].end(), j) == bad_moves[i].end()){
+                final_moves.push_back(moves[j]);
+            }
+        }
+        pieces[i]->SetMoveset(final_moves);
+    }
+}
+
 //Capture a piece, adding it to the pile of captured pieces
 void Board::CapturePiece(Piece* p) {
 
@@ -380,7 +426,6 @@ bool Board::KingInCheck(char color) {
             //See if any contains a King
             for (unsigned int j = 0; j < moves.size(); j++) {
                 if (ContainsKing(moves[j])) {
-                    qDebug() << pieces[i]->get_color() << pieces[i]->get_type() << "is attacking the" << color << "king";
                     GetSquareAt(moves[j])->get_piece()->ChangeAttackStatus(true);
                     return true;
                 }
