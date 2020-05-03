@@ -9,6 +9,9 @@ std::vector<Piece*> Board::pieces = {};
 std::vector<Piece*> Board::wCapturedPieces = {};
 std::vector<Piece*> Board::bCapturedPieces = {};
 
+Piece* Board::wKingPtr = nullptr;
+Piece* Board::bKingPtr = nullptr;
+
 //Constructor
 Board::Board(QGraphicsView *view, QObject *parent) : QObject(parent) {
     board_scene_ = view->scene();
@@ -88,6 +91,7 @@ void Board::MovePiece(Coord from, Coord to) {
                 //Look for check
                 if (KingInCheck(movingPiece->get_color() == 'w' ? 'b' : 'w')) {
                     qDebug() << "Move put" << (movingPiece->get_color() == 'w' ? "black" : "white") << "king in check";
+                    movingPiece->get_color() == 'w' ? bKingPtr->ChangeAttackStatus(true) : wKingPtr->ChangeAttackStatus(true);
                 }
 
                 //Look for checkmate
@@ -146,8 +150,14 @@ void Board::Reset() {
     AddPiece(new Piece(3, 7, "queen", 'w'));
 
     //Kings
-    AddPiece(new Piece(4, 0, "king", 'b'));
-    AddPiece(new Piece(4, 7, "king", 'w'));
+    Piece* bKing = new Piece(4, 0, "king", 'b');
+    Piece* wKing = new Piece(4, 7, "king", 'w');
+
+    bKingPtr = bKing;
+    wKingPtr = wKing;
+
+    AddPiece(bKing);
+    AddPiece(wKing);
 
     qDebug() << "Pieces set to their starting positions";
     UpdateMovesets();
@@ -406,19 +416,10 @@ bool Board::ContainsEnemy(Coord c1, Coord c2) {
     return false;
 }
 
-//Check if the coordinate contains a king
-bool Board::ContainsKing(Coord c) {
-    Piece* p = GetSquareAt(c)->get_piece();
-
-    if (p) {
-        return (p->get_type() == "king");
-    }
-    return false;
-}
-
 //See if the king with a given color is in check
 bool Board::KingInCheck(char color) {
     char opponent = (color == 'w' ? 'b' : 'w');
+    Coord kingCoords = (color == 'w' ? wKingPtr->get_coords() : bKingPtr->get_coords());
 
     //Get the moves for all enemies
     for (unsigned int i = 0; i < pieces.size(); i++) {
@@ -427,8 +428,7 @@ bool Board::KingInCheck(char color) {
 
             //See if any contains a King
             for (unsigned int j = 0; j < moves.size(); j++) {
-                if (ContainsKing(moves[j])) {
-                    GetSquareAt(moves[j])->get_piece()->ChangeAttackStatus(true);
+                if (moves[j] == kingCoords) {
                     return true;
                 }
             }
