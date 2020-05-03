@@ -15,7 +15,6 @@ Piece::Piece(int x, int y, QString type, char color, QObject *parent) : QObject(
 void Piece::ChangePos(Coord m) {
     x_pos_ = m.X();
     y_pos_ = m.Y();
-    times_moved_++;
 }
 
 //See if a given coordinate is in our moveset, indicating it can be played

@@ -36,6 +36,7 @@ class Piece : public QObject {
         void ChangePos(Coord m);
         void SetMoveset(std::vector<Coord> new_moveset) { moveset_ = new_moveset; };
         bool IsValidMove(Coord m);
+        void PieceMoved() { times_moved_++; };
 };
 
 #endif // PIECE_H
