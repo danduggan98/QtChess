@@ -70,18 +70,20 @@ void Board::MovePiece(Coord from, Coord to) {
 
             if (movingPiece->IsValidMove(to)) {
 
-                //Move the piece and update the movesets
+                //Move the piece
                 movingPiece->ChangePos(to);
                 movingPiece->PieceMoved();
                 toSquare->SetPiece(movingPiece);
                 fromSquare->RemovePiece();
-                UpdateMovesets();
-                CleanMovesets();
 
-                //If the move was successful, capture any piece on that square
+                //Capture any piece on that square
                 if (fromSquare->isEmpty() && destinationPiece) {
                     CapturePiece(destinationPiece);
                 }
+
+                //Update movesets
+                UpdateMovesets();
+                CleanMovesets();
 
                 //Look for check
                 if (KingInCheck(movingPiece->get_color() == 'w' ? 'b' : 'w')) {
