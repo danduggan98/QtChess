@@ -18,11 +18,13 @@ class MainWindow : public QMainWindow {
         void HighlightMoves(Square *s);
         void RemoveSelections();
         void RemoveAttacks();
+        void GoToNextTurn() { whose_turn == 'w' ? whose_turn = 'b' : whose_turn = 'w'; };
         ~MainWindow();
 
     private:
         Board* board_ptr;
         Square* lastSelectedSquare = nullptr;
+        char whose_turn;
 
         Ui::MainWindow *ui;
         QGraphicsScene *board_scene;
