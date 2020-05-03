@@ -61,14 +61,8 @@ void MainWindow::RemoveSelections() {
 
 //Take the kings out of check
 void MainWindow::RemoveAttacks() {
-    for (int i = 0; i < Board::numRows; i++) {
-        for (int j = 0; j < Board::numCols; j++) {
-            Piece* p = board_ptr->GetSquareAt(Coord(i, j))->get_piece();
-            if (p) {
-                p->ChangeAttackStatus(false);
-            }
-        }
-    }
+    Board::bKingPtr->ChangeAttackStatus(false);
+    Board::wKingPtr->ChangeAttackStatus(false);
 }
 
 //Change who can move, along with the alerts indicating this
@@ -95,6 +89,7 @@ void MainWindow::SquareSelectedSlot(Square *s) {
     qDebug() << "Selected square (" << s->get_x() << ", " << s->get_y() << ")";
 
     if (nextPiece) {
+        s->Select();
         qDebug() << "Square contains a " << nextPiece->get_color() << nextPiece->get_type();
     }
     else {
@@ -142,7 +137,6 @@ void MainWindow::SquareSelectedSlot(Square *s) {
             return;
         }
         else {
-            s->Select();
             lastSelectedSquare = s;
             RemoveHighlights();
             HighlightMoves(s);
@@ -160,4 +154,3 @@ void MainWindow::SquareSelectedSlot(Square *s) {
 MainWindow::~MainWindow() {
     delete ui;
 }
-
