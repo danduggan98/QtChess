@@ -27,6 +27,9 @@ class Board : public QObject
         static std::vector<Piece*> wCapturedPieces;
         static std::vector<Piece*> bCapturedPieces;
 
+        static Piece* wKingPtr;
+        static Piece* bKingPtr;
+
         explicit Board(QGraphicsView *view, QObject *parent = nullptr);
         Square* GetSquareAt(Coord c) { return board_[c.X()][c.Y()]; };
         void AddPiece(Piece *piece);
@@ -43,7 +46,6 @@ class Board : public QObject
         bool ContainsPiece(Coord c) { return !GetSquareAt(c)->isEmpty(); };
         bool ContainsAlly(Coord c1, Coord c2);
         bool ContainsEnemy(Coord c1, Coord c2);
-        bool ContainsKing(Coord c);
         bool KingInCheck(char color);
         bool KingInCheckmate(char color);
 };
