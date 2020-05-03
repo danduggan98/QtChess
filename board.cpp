@@ -381,6 +381,7 @@ bool Board::KingInCheck(char color) {
             for (unsigned int j = 0; j < moves.size(); j++) {
                 if (ContainsKing(moves[j])) {
                     qDebug() << pieces[i]->get_color() << pieces[i]->get_type() << "is attacking the" << color << "king";
+                    GetSquareAt(moves[j])->get_piece()->ChangeAttackStatus(true);
                     return true;
                 }
             }

@@ -18,6 +18,7 @@ class Piece : public QObject {
         char color_;
         std::vector<Coord> moveset_;
         int times_moved_;
+        bool is_under_attack;
 
     public:
         explicit Piece(int x, int y, QString type, char color, QObject *parent = nullptr);
@@ -28,6 +29,9 @@ class Piece : public QObject {
         char get_color() { return color_; };
         int get_times_moved() { return times_moved_; };
         std::vector<Coord> get_moves() { return moveset_; };
+
+        void ChangeAttackStatus(bool status) { is_under_attack = status; };
+        bool IsUnderAttack() { return is_under_attack; };
 
         void ChangePos(Coord m);
         void SetMoveset(std::vector<Coord> new_moveset) { moveset_ = new_moveset; };

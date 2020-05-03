@@ -17,6 +17,7 @@ class MainWindow : public QMainWindow {
         void RemoveHighlights();
         void HighlightMoves(Square *s);
         void RemoveSelections();
+        void RemoveAttacks();
         ~MainWindow();
 
     private:

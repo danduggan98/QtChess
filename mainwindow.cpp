@@ -58,6 +58,18 @@ void MainWindow::RemoveSelections() {
     }
 }
 
+//Take the kings out of check
+void MainWindow::RemoveAttacks() {
+    for (int i = 0; i < Board::numRows; i++) {
+        for (int j = 0; j < Board::numCols; j++) {
+            Piece* p = board_ptr->GetSquareAt(Coord(i, j))->get_piece();
+            if (p) {
+                p->ChangeAttackStatus(false);
+            }
+        }
+    }
+}
+
 //Select a piece when it's clicked
 void MainWindow::SquareSelectedSlot(Square *s) {
     Piece* nextPiece = s->get_piece();
@@ -96,6 +108,7 @@ void MainWindow::SquareSelectedSlot(Square *s) {
 
         //If they clicked two different squares, move the piece
         else {
+            RemoveAttacks();
             board_ptr->MovePiece(from, to);
             RemoveHighlights();
             lastSelectedSquare = nullptr; //Reset the pointer so they can make the next move

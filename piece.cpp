@@ -8,6 +8,7 @@ Piece::Piece(int x, int y, QString type, char color, QObject *parent) : QObject(
     color_ = color;
     moveset_ = {};
     times_moved_ = 0;
+    is_under_attack = false;
 }
 
 //Move the piece to a new square
