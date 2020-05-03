@@ -71,6 +71,20 @@ void MainWindow::RemoveAttacks() {
     }
 }
 
+//Change who can move, along with the alerts indicating this
+void MainWindow::GoToNextTurn() {
+    if (whose_turn == 'w') {
+        whose_turn = 'b';
+        ui->BlackTurnLabel->setText("Black Turn");
+        ui->WhiteTurnLabel->setText("");
+    }
+    else {
+        whose_turn = 'w';
+        ui->WhiteTurnLabel->setText("White Turn");
+        ui->BlackTurnLabel->setText("");
+    }
+}
+
 //Select a piece when it's clicked
 void MainWindow::SquareSelectedSlot(Square *s) {
 

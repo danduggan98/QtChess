@@ -18,7 +18,7 @@ class MainWindow : public QMainWindow {
         void HighlightMoves(Square *s);
         void RemoveSelections();
         void RemoveAttacks();
-        void GoToNextTurn() { whose_turn == 'w' ? whose_turn = 'b' : whose_turn = 'w'; };
+        void GoToNextTurn();
         ~MainWindow();
 
     private:
