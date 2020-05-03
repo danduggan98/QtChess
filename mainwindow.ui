@@ -125,17 +125,38 @@
    <widget class="QLabel" name="RowLabel">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>140</y>
-      <width>71</width>
-      <height>21</height>
+      <x>170</x>
+      <y>110</y>
+      <width>41</width>
+      <height>391</height>
      </rect>
     </property>
     <property name="layoutDirection">
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string>87654321</string>
+     <string>8
+
+
+7
+
+
+6
+
+
+5
+
+
+4
+
+
+3
+
+
+2
+
+
+1</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
