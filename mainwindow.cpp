@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     this->setWindowTitle("QtChess");
+    whose_turn = 'w'; //White always goes first
 
     //Create a scene for the board and attach it to our ui
     QGraphicsView *board_graphics = ui->Board;
@@ -72,6 +73,7 @@ void MainWindow::RemoveAttacks() {
 
 //Select a piece when it's clicked
 void MainWindow::SquareSelectedSlot(Square *s) {
+
     Piece* nextPiece = s->get_piece();
 
     //Select the square if it contains a piece
@@ -79,7 +81,6 @@ void MainWindow::SquareSelectedSlot(Square *s) {
     qDebug() << "Selected square (" << s->get_x() << ", " << s->get_y() << ")";
 
     if (nextPiece) {
-        s->Select();
         qDebug() << "Square contains a " << nextPiece->get_color() << nextPiece->get_type();
     }
     else {
@@ -106,20 +107,32 @@ void MainWindow::SquareSelectedSlot(Square *s) {
             HighlightMoves(s);
         }
 
-        //If they clicked two different squares, move the piece
+        //If they clicked two different squares, move the piece and go to the next turn
         else {
             RemoveAttacks();
             board_ptr->MovePiece(from, to);
             RemoveHighlights();
             lastSelectedSquare = nullptr; //Reset the pointer so they can make the next move
+
+            //If the move succeeded, go to the next turn
+            if (board_ptr->GetSquareAt(from)->isEmpty()) {
+                GoToNextTurn();
+            }
         }
     }
 
-    //No piece previously selected - select this one if it has a piece on it
+    //No piece previously selected - select this one if it has a piece and it's that player's turn
     else if (nextPiece) {
-        lastSelectedSquare = s;
-        RemoveHighlights();
-        HighlightMoves(s);
+        if (nextPiece->get_color() != whose_turn) {
+            qDebug() << "Can not move that piece. It is" << (whose_turn == 'w' ? "white's" : "black's") << "turn";
+            return;
+        }
+        else {
+            s->Select();
+            lastSelectedSquare = s;
+            RemoveHighlights();
+            HighlightMoves(s);
+        }
     }
 
     //No piece on this square - nothing selected
