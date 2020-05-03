@@ -436,17 +436,16 @@ bool Board::KingInCheck(char color) {
 }
 
 //Look for checkmate
+// Checkmate happens when one side has no more valid moves - see if any pieces from this color can still move
 bool Board::KingInCheckmate(char color) {
-
-    //Find the kings, then check if they are out of valid moves
     for (unsigned int i = 0; i < pieces.size(); i++) {
         Piece* p = pieces[i];
 
-        if (p->get_type() == "king") {
-            if (KingInCheck(color) && p->get_moves().size() == 0) {
-                return true;
+        if (p->get_color() == color) {
+            if (p->get_moves().size() > 0) {
+                return false;
             }
         }
     }
-    return false;
+    return true;
 }
