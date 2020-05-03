@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowTitle("QtChess");
 
     //Create a scene for the board and attach it to our ui
     QGraphicsView *board_graphics = ui->Board;
@@ -59,43 +60,50 @@ void MainWindow::RemoveSelections() {
 
 //Select a piece when it's clicked
 void MainWindow::SquareSelectedSlot(Square *s) {
+    Piece* nextPiece = s->get_piece();
 
     //Select the square if it contains a piece
     RemoveSelections();
-    if (s->get_piece()) {
-        SelectSquare(s);
-    }
-
     qDebug() << "Selected square (" << s->get_x() << ", " << s->get_y() << ")";
-    if (!s->isEmpty()) {
-        qDebug() << "Square contains a " << s->get_piece()->get_color() << s->get_piece()->get_type();
-    } else {
+
+    if (nextPiece) {
+        s->Select();
+        qDebug() << "Square contains a " << nextPiece->get_color() << nextPiece->get_type();
+    }
+    else {
         qDebug() << "Square is empty";
     }
 
     //If a square was previously selected, move the piece from that square to this one if they are not allies
     if (lastSelectedSquare) {
         Piece* prevPiece = lastSelectedSquare->get_piece();
-        Piece* nextPiece = s->get_piece();
+        Coord from = lastSelectedSquare->get_coords();
+        Coord to = s->get_coords();
+
+        //If they clicked the same piece twice, deselect it
+        if (from == to) {
+            s->Deselect();
+            RemoveHighlights();
+            lastSelectedSquare = nullptr;
+        }
 
         //If they clicked on two consecutive ally pieces, just select the new one
-        if (nextPiece && (prevPiece->get_color() == nextPiece->get_color())) {
+        else if (nextPiece && (prevPiece->get_color() == nextPiece->get_color())) {
             lastSelectedSquare = s;
             RemoveHighlights();
             HighlightMoves(s);
         }
-        else {
-            Coord from = lastSelectedSquare->get_coords();
-            Coord to = s->get_coords();
 
+        //If they clicked two different squares, move the piece
+        else {
             board_ptr->MovePiece(from, to);
-            lastSelectedSquare = nullptr; //Reset the pointer so they can make the next move
             RemoveHighlights();
+            lastSelectedSquare = nullptr; //Reset the pointer so they can make the next move
         }
     }
 
     //No piece previously selected - select this one if it has a piece on it
-    else if (s->get_piece()) {
+    else if (nextPiece) {
         lastSelectedSquare = s;
         RemoveHighlights();
         HighlightMoves(s);
@@ -104,6 +112,7 @@ void MainWindow::SquareSelectedSlot(Square *s) {
     //No piece on this square - nothing selected
     else {
         lastSelectedSquare = nullptr;
+        RemoveHighlights();
     }
     update();
 }
