@@ -12,8 +12,8 @@ Square::Square(int x, int y, float width, float height,
     empty_ = empty;
     color_ = color;
     piece_ = nullptr;
-    isHighlighted = false;
-    isSelected = false;
+    is_highlighted_ = false;
+    is_selected_ = false;
 }
 
 void Square::RemovePiece() {
@@ -54,7 +54,7 @@ void Square::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     painter->setBrush(b);
 
     //Highlight the square if it contains a valid move for the current piece
-    if (isHighlighted) {
+    if (is_highlighted_) {
 
         //Small blue dot if empty
         if (isEmpty()) {
@@ -74,7 +74,7 @@ void Square::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     }
 
     //Color the square green if it's selected
-    if (isSelected) {
+    if (is_selected_) {
         painter->setBrush(QBrush(QColor(0,200,0)));
         painter->setOpacity(0.25);
         painter->drawRect(QRect(this->x_val_ * this->width_, this->y_val_ * this->height_, this->width_, this->height_));

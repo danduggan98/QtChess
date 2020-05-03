@@ -16,8 +16,8 @@ class Square : public QObject, public QGraphicsItem {
         bool empty_;
         QColor color_;
         Piece* piece_;
-        bool isHighlighted;
-        bool isSelected;
+        bool is_highlighted_;
+        bool is_selected_;
 
     public:
         explicit Square(int x, int y, float width, float height,
@@ -29,10 +29,10 @@ class Square : public QObject, public QGraphicsItem {
         bool isEmpty() { return empty_; };
         Piece* get_piece() { return piece_; };
 
-        void Highlight() { isHighlighted = true; };
-        void RemoveHighlight() {isHighlighted = false; };
-        void Select() { isSelected = true; };
-        void Deselect() { isSelected = false; };
+        void Highlight() { is_highlighted_ = true; };
+        void RemoveHighlight() { is_highlighted_ = false; };
+        void Select() { is_selected_ = true; };
+        void Deselect() { is_selected_ = false; };
 
         void RemovePiece();
         void SetPiece(Piece* piece);
