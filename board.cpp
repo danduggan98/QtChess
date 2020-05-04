@@ -84,6 +84,18 @@ void Board::MovePiece(Coord from, Coord to) {
                     CapturePiece(destinationPiece);
                 }
 
+                //Promote pawns
+                if (movingPiece->get_type() == "pawn") {
+                    Coord pawnPos = movingPiece->get_coords();
+                    char clr = movingPiece->get_color();
+
+                    //Reaches other side
+                    if ((clr == 'w' && pawnPos.Y() == 0) || (clr == 'b' && pawnPos.Y() == 7)) {
+                        movingPiece->Promote();
+                        qDebug() << (clr == 'w' ? "White" : "Black") << "promoted a pawn!";
+                    }
+                }
+
                 //Update movesets
                 UpdateMovesets();
                 CleanMovesets();
@@ -97,6 +109,7 @@ void Board::MovePiece(Coord from, Coord to) {
                 //Look for checkmate
                 if (KingInCheckmate(movingPiece->get_color() == 'w' ? 'b' : 'w')) {
                     qDebug() << (movingPiece->get_color() == 'w' ? "BLACK" : "WHITE") << "KING IS IN CHECKMATE!";
+                    qDebug() << (movingPiece->get_color() == 'w' ? "WHITE" : "BLACK") << "WON!";
                 }
             }
             else {
@@ -112,14 +125,31 @@ void Board::MovePiece(Coord from, Coord to) {
     }
 }
 
-//Move the pieces to their starting positions
+//Return the game to its default state
 void Board::Reset() {
 
-    //Remove and delete any pieces already in the vector to avoid leaking memory
+    //Reset everything
+    wKingPtr = nullptr;
+    bKingPtr = nullptr;
+    wCapturedPieces = {};
+    bCapturedPieces = {};
+
+    //Remove and delete any pieces to avoid leaking memory
     for (auto p : pieces) {
         delete p;
     }
     pieces.clear();
+
+    for (unsigned int i = 0; i < Board::numRows; i++) {
+        for (unsigned int j = 0; j < Board::numCols; j++) {
+            Square *s = GetSquareAt(Coord(i,j));
+            s->RemovePiece();
+            s->Deselect();
+            s->RemoveHighlight();
+        }
+    }
+
+    //Place all pieces at their starting positions
 
     //Pawns
     for (int i = 0; i < Board::numCols; i++) {
@@ -257,9 +287,9 @@ void Board::DefineMoveset(Piece* p) {
 
     //BISHOPS
     else if (type == "bishop") {
-        AddMovespace(cur, Coord(0, 0), new_moveset);                           //Upper left diagonal
-        AddMovespace(cur, Coord(Board::numCols, 0), new_moveset);              //Upper right diagonal
-        AddMovespace(cur, Coord(0, Board::numRows), new_moveset);              //Lower left diagonal
+        AddMovespace(cur, Coord(-1, -1), new_moveset);                         //Upper left diagonal
+        AddMovespace(cur, Coord(Board::numCols, -1), new_moveset);             //Upper right diagonal
+        AddMovespace(cur, Coord(-1, Board::numRows), new_moveset);             //Lower left diagonal
         AddMovespace(cur, Coord(Board::numCols, Board::numRows), new_moveset); //Lower right diagonal
     }
 
@@ -370,6 +400,7 @@ void Board::CleanMovesets() {
 
 //Capture a piece, adding it to the pile of captured pieces
 void Board::CapturePiece(Piece* p) {
+
 
     //Add the pieces to its opponent's list of captured pieces
     if (p->get_color() == 'w') {

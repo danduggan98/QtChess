@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     this->setWindowTitle("QtChess");
+    ui->RestartWidget->hide();
     whose_turn = 'w'; //White always goes first
 
     //Create a scene for the board and attach it to our ui
@@ -28,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
             connect(Board::board_[i][j], &Square::SquareSelected, this, &MainWindow::SquareSelectedSlot);
         }
     }
+    connect(ui->RestartButton, &QAbstractButton::pressed, this, &MainWindow::RestartButtonPushed);
 }
 
 //Clear the highlights for any previously selected squares
@@ -67,15 +69,18 @@ void MainWindow::RemoveAttacks() {
 
 //Change who can move, along with the alerts indicating this
 void MainWindow::GoToNextTurn() {
-    if (whose_turn == 'w') {
-        whose_turn = 'b';
-        ui->BlackTurnLabel->setText("Black Turn");
-        ui->WhiteTurnLabel->setText("");
-    }
-    else {
+
+    //If black just moved or it's checkmate, make it white's turn
+    if (whose_turn == 'b' || board_ptr->KingInCheckmate('w') || board_ptr->KingInCheckmate('b')) {
         whose_turn = 'w';
         ui->WhiteTurnLabel->setText("White Turn");
         ui->BlackTurnLabel->setText("");
+    }
+    //If white just moved, make it black's turn
+    else {
+        whose_turn = 'b';
+        ui->BlackTurnLabel->setText("Black Turn");
+        ui->WhiteTurnLabel->setText("");
     }
 }
 
@@ -123,7 +128,15 @@ void MainWindow::SquareSelectedSlot(Square *s) {
             RemoveHighlights();
             lastSelectedSquare = nullptr; //Reset the pointer so they can make the next move
 
-            //If the move succeeded, go to the next turn
+            //If game over, show the restart button
+            if (board_ptr->KingInCheckmate('w') || board_ptr->KingInCheckmate('b')) {
+                QString winner = (board_ptr->KingInCheckmate('w') ? "White" : "Black");
+                GoToNextTurn();
+                ui->RestartWidget->show();
+                ui->RestartLabel->setText("Checkmate!\nGame Over\n\n" + winner + " won!");
+            }
+
+            //If the move succeeded, determine whose turn it is next
             if (board_ptr->GetSquareAt(from)->isEmpty()) {
                 GoToNextTurn();
             }
@@ -148,6 +161,13 @@ void MainWindow::SquareSelectedSlot(Square *s) {
         lastSelectedSquare = nullptr;
         RemoveHighlights();
     }
+    update();
+}
+
+void MainWindow::RestartButtonPushed() {
+    board_ptr->Reset();
+    qDebug() << "Restarting Game";
+    ui->RestartWidget->hide();
     update();
 }
 

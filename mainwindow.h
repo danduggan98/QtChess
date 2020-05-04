@@ -31,5 +31,6 @@ class MainWindow : public QMainWindow {
 
     private slots:
         void SquareSelectedSlot(Square *s);
+        void RestartButtonPushed();
 };
 #endif // MAINWINDOW_H
