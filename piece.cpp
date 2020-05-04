@@ -1,6 +1,8 @@
 #include "piece.h"
 #include <QDebug>
 
+#include <QtWidgets>
+
 Piece::Piece(int x, int y, QString type, char color, QObject *parent) : QObject(parent) {
     x_pos_ = x;
     y_pos_ = y;
@@ -26,4 +28,11 @@ bool Piece::IsValidMove(Coord m) {
         }
     }
     return false;
+}
+
+//Respond when the square is clicked
+void Piece::mousePressEvent(QGraphicsSceneMouseEvent *event){
+    if (event->button() == Qt::LeftButton) {
+        emit PieceSelectedSlot(this);
+    }
 }

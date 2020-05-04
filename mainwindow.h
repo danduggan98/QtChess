@@ -19,6 +19,7 @@ class MainWindow : public QMainWindow {
         void RemoveSelections();
         void RemoveAttacks();
         void GoToNextTurn();
+        void addGraphicsToBar(Piece* p);
         ~MainWindow();
 
     private:
@@ -31,5 +32,9 @@ class MainWindow : public QMainWindow {
 
     private slots:
         void SquareSelectedSlot(Square *s);
+       // void playerTurn(Square * lastSelectedSquare);
+        void levelUp(Piece *piece);
+        void levelUpUpdate(Piece *piece);
+        void PieceSelectedSlot(Piece *piece);
 };
 #endif // MAINWINDOW_H

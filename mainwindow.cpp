@@ -2,13 +2,15 @@
 #include "ui_mainwindow.h"
 
 #include "board.h"
-
+#include <QtWidgets>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+
+
     ui->setupUi(this);
     this->setWindowTitle("QtChess");
     whose_turn = 'w'; //White always goes first
@@ -150,6 +152,52 @@ void MainWindow::SquareSelectedSlot(Square *s) {
     }
     update();
 }
+
+void MainWindow::PieceSelectedSlot(Piece *piece){
+    //will call the level up function
+    levelUp(piece);
+
+}
+
+void MainWindow::levelUp(Piece *piece){
+    if(Board::wCapturedPieces.size() == 5){
+        qDebug()<< "Congratulations! You've reached your first Level Up!";
+        qDebug()<< "Now, please click on a piece that you have captured, to bring back to the board, and it play for you're team.";
+        levelUpUpdate(piece);
+    }else if(Board::bCapturedPieces.size() == 5){
+        qDebug()<< "Congratulations! You've reached your first Level Up!";
+        qDebug()<< "Now, please click on a piece that you have captured, to bring back to the board, and it play for you're team.";
+        levelUpUpdate(piece);
+    }else{
+
+    }
+}
+
+void MainWindow::levelUpUpdate(Piece *piece){
+    if(board_ptr->GetSquareAt(piece->get_coords())->isEmpty()){
+        board_ptr->AddPiece(piece);
+    }else{
+        Coord lvlUpX = piece->get_coords();
+        Coord lvlUpY = piece->get_coords();
+
+        //Coord newCoord = piece->get_coords();
+        Coord newCoord = Coord(lvlUpX.X(), lvlUpY.Y());
+        piece->ChangePos(newCoord);
+        board_ptr->AddPiece(piece);
+    }
+}
+
+/*
+void MainWindow::addGraphicsToBar(Piece* p){
+    //import graphics when piece has been capture
+    //show piece in bar
+
+
+    ui->setupUi(this);
+    ui->BlackCapturedPieces;
+    ui->WhiteCapturedPieces;
+}
+*/
 
 MainWindow::~MainWindow() {
     delete ui;

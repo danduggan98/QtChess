@@ -3,6 +3,7 @@
 
 #include "coord.h"
 
+#include <QGraphicsItem>
 #include <QObject>
 #include <QColor>
 #include <QString>
@@ -37,6 +38,12 @@ class Piece : public QObject {
         void SetMoveset(std::vector<Coord> new_moveset) { moveset_ = new_moveset; };
         bool IsValidMove(Coord m);
         void PieceMoved() { times_moved_++; };
+
+        protected:
+        void mousePressEvent(QGraphicsSceneMouseEvent *event);
+        signals:
+        void PieceSelectedSlot(Piece *piece);
 };
+//};
 
 #endif // PIECE_H
